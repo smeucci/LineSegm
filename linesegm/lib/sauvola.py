@@ -25,11 +25,13 @@ class Sauvola:
         # threshold = threshold * check_border
         # apply the threshold to the image
         output = np.array(255 * (im >= threshold), 'uint8')
+
         return output
 
     def padding(self, im, window):
         pad = int(np.floor(window[0] / 2))
         im = cv2.copyMakeBorder(im, pad, pad, pad, pad, cv2.BORDER_CONSTANT)
+
         return im
 
     def integralMean(self, im, rows, cols, window):
@@ -51,9 +53,11 @@ class Sauvola:
         # calculate the average values for each pixel
         mean = isum / (m * n)
         sqmean = isqsum / (m * n)
+
         return mean, sqmean
 
     def ind2sub(self, ind, shape):
         row = ind / shape[1]
         col = ind % shape[1]
+
         return row, col
