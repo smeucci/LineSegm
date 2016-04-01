@@ -40,16 +40,9 @@ class LineLocalization:
         # find peaks that are too high
         mean_peaks = np.mean(hist[peaks])
         std_peaks = np.std(hist[peaks])
-        thres_peaks_1 = mean_peaks + 1.5*std_peaks
-        thres_peaks_2 = mean_peaks - 3*std_peaks
-        border_locs_1 = (hist[peaks] > thres_peaks_1)
-        border_locs_2 = (hist[peaks] < thres_peaks_2)
-        border_locs = border_locs_1 + border_locs_2
-        # remove peaks that are too high
-        remove_locs = []
-        for i, loc in enumerate(border_locs):
-            if bool(loc) is True:
-                remove_locs.append(i)
-        peaks = np.delete(peaks, remove_locs, axis=0)
+        thres_peaks_high = mean_peaks + 1.5*std_peaks
+        thres_peaks_low = mean_peaks - 3*std_peaks
+        peaks = peaks[np.logical_and(hist[peaks] < thres_peaks_high,
+                                     hist[peaks] > thres_peaks_low)]
 
         return peaks
