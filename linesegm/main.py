@@ -20,7 +20,7 @@ for filename in filenames:
     print 'Localizing lines..'
     lineloc = LineLocalization()
     indexes = lineloc.localize(th)
-
+    print indexes
     th[indexes, 0:th.shape[1]] = 1
     print 'Number of lines detected: ' + str(len(indexes))
 
