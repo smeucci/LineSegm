@@ -26,7 +26,7 @@ for filename in filenames:
     imbw[indexes, 0:imbw.shape[1]] = 1
     print ' => ' + str(len(indexes)) + ' lines detected.'
 
-    imbw_filename = str.replace(filename, '.', '_th.')
+    imbw_filename = str.replace(filename, '.', '_bw.')
     imbw_filename = str.replace(imbw_filename, 'data', 'data/bw')
     print 'Saving image ' + imbw_filename + '..\n'
     cv2.imwrite(imbw_filename, imbw)
