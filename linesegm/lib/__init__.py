@@ -1,2 +1,2 @@
-from sauvola import Sauvola
-from linelocalization import LineLocalization
+import sauvola
+import linelocalization

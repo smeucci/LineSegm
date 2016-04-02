@@ -1,33 +1,35 @@
 import cv2
 from sys import argv
-from lib import Sauvola
-from lib import LineLocalization
+from lib import sauvola, linelocalization
 from time import time as timer
+
 
 start = timer()
 
 filenames = argv
 filenames.pop(0)
 
+print '\n############################'
+print '##    Line Segmentation   ##'
+print '############################\n'
+
 for filename in filenames:
     print 'Reading image ' + filename + '..'
     im = cv2.imread(filename, 0)
 
-    print 'Thresholding image ' + filename + '..'
-    sauvola = Sauvola()
-    th = sauvola.binarize(im, [20, 20], 128, 0.3)
+    print '- Thresholding image..'
+    imbw = sauvola.binarize(im, [20, 20], 128, 0.3)
 
-    print 'Localizing lines..'
-    lineloc = LineLocalization()
-    indexes = lineloc.localize(th)
-    print indexes
-    th[indexes, 0:th.shape[1]] = 1
-    print 'Number of lines detected: ' + str(len(indexes))
+    print '- Localizing lines..',
+    indexes = linelocalization.localize(imbw)
 
-    th_filename = str.replace(filename, '.', '_th.')
-    th_filename = str.replace(th_filename, 'data', 'data/bw')
-    print 'Saving image ' + th_filename + '..\n'
-    cv2.imwrite(th_filename, th)
+    imbw[indexes, 0:imbw.shape[1]] = 1
+    print ' => ' + str(len(indexes)) + ' lines detected.'
+
+    imbw_filename = str.replace(filename, '.', '_th.')
+    imbw_filename = str.replace(imbw_filename, 'data', 'data/bw')
+    print 'Saving image ' + imbw_filename + '..\n'
+    cv2.imwrite(imbw_filename, imbw)
 
 
 print ' - Elapsed time: ' + str((timer() - start)) + ' s\n'

@@ -1,2 +1,2 @@
-from lib import Sauvola
-from lib import LineLocalization
+from lib import sauvola
+from lib import linelocalization
