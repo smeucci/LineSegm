@@ -1,1 +1,1 @@
-# Line Segmentation of Manuscript Documents.
+# Line Segmentation of Handwritten Documents.
