@@ -2,6 +2,7 @@
 TODO LIST
 =========
 
+- fare refactor con classi
 - mettere controlli su dimensione finestra
 - mettere controllo su input files
 - migliorare sogliatura su parti non testuali
