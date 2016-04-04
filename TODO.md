@@ -2,6 +2,8 @@
 TODO LIST
 =========
 
+- implementare jump point search (neighbor pruning)
+- implementare subgoals
 - fare refactor con classi
 - mettere controlli su dimensione finestra
 - mettere controllo su input files
