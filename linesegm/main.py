@@ -27,17 +27,16 @@ for filename in filenames:
 
     print '- Path planning with A*..'
     path = []
-    for i in range(1, 2):
-        start = [indexes[i], 0]
-        # goal = [indexes[i], 1110]  # im.shape[1]-1]
+    for i in range(0, 1):
+        ys = 200
+        yg = 2600
+        step = 5
+        start = [indexes[i], ys]
+        goal = [indexes[i], yg]  # im.shape[1]-1]
         a = astar.Astar()
-        step = im.shape[1] / 15
-        for t in range(0, 15):
-            tmp_start = [start[0], start[1] + t*step]
-            tmp_goal = [start[0], start[1] + step + step*t]
-            path += a.pathfind(imbw, tmp_start, tmp_goal)
-
+        path, map = a.pathfind(imbw, start, goal)
         print '\t# path: ' + str(path[::-1])
+        print map[indexes[i]-step:indexes[i]+step, ys:yg+2]
 
     imbw_filename = str.replace(filename, '.', '_bw.')
     imbw_filename = str.replace(imbw_filename, 'data', 'data/bw')
@@ -46,6 +45,6 @@ for filename in filenames:
         imbw[p[0], p[1]] = 0
 
     cv2.imwrite(imbw_filename, imbw)
-
+    cv2.imwrite('data/bw/test_map.jpg', map)
 
 print ' - Elapsed time: ' + str((timer() - begin)) + ' s\n'

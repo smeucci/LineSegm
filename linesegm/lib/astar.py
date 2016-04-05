@@ -1,3 +1,4 @@
+import numpy as np
 
 
 class Astar():
@@ -8,19 +9,18 @@ class Astar():
     def pathfind(self, im, start, goal):
         # initialize image, start and goal
         self.im = im / 255
+        self.size = self.im.shape
+        self.map = np.zeros((self.size[0], self.size[1]), dtype=np.int32)
         self.start = start
         self.goal = goal
-        # size of the image
-        self.size = self.im.shape
         # create openSet and closedSet
         self.closedSet = []
-        self.openSet = []
-        # initialize openSet, gScore, fScore with start node values
-        self.openSet.append(start)
-        self.gScore = {str(start): 0}
-        self.fScore = {str(start): 20*self.get_euclidean_dist(start, goal)}
-        # create empty dictionary
+        self.openSet = [start]
         self.cameFrom = {}
+        # initialize openSet, gScore, fScore with start node values
+        self.gScore = {str(start): 0}
+        self.fScore = {str(start): self.get_euclidean_dist(start, goal)}
+        self.map[start[0], start[1]] = self.fScore[str(start)]
 
         print '\t# start: ' + str(start) + " - goal: " + str(goal)
         cnt = 0
@@ -28,7 +28,7 @@ class Astar():
             current = self.get_best_fScore()
             # print 'fscore: ' + str(self.fScore)
             # print 'gscore: ' + str(self.gScore)
-            # print 'current: ' + str(current)
+            print 'current: ' + str(current)
             # print 'open: ' + str(self.openSet)
             # print 'close: ' + str(self.closedSet)
             # print '------------------------------------'
@@ -52,27 +52,25 @@ class Astar():
 
                 self.gScore[str(neighbor)] = tentative_gScore
                 self.fScore[str(neighbor)] = self.gScore[str(neighbor)] + \
-                    20*self.get_euclidean_dist(neighbor, goal)
+                    self.get_euclidean_dist(neighbor, goal)
                 self.cameFrom[str(neighbor)] = current
+                self.map[neighbor[0], neighbor[1]] = self.fScore[str(neighbor)]
 
         return None
 
     def get_euclidean_dist(self, current, goal):
-        return ((current[0] - goal[0])**2 + (current[1] - goal[1])**2) ** 0.5
+        return 20*((current[0] - goal[0])**2 + (current[1] - goal[1])**2)**0.5
 
     def get_neighbors(self, current):
-        neighbors = []
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                if (i != 0 or j != 0):
-                    r = current[0] + i
-                    c = current[1] + j
-                    if (r >= 0 and c >= 0 and r <= self.size[0]-1 and
-                            c <= self.size[1]-1):
-                        neighbor = [r, c]
-                        neighbors.append(neighbor)
+        r, c = current
+        neighbors = [[r - 1, c - 1], [r - 1, c], [r - 1, c + 1],
+                     [r, c - 1], [r, c + 1],
+                     [r + 1, c - 1], [r + 1, c], [r + 1, c + 1]]
+        return filter(self.in_bounds, neighbors)
 
-        return neighbors
+    def in_bounds(self, node):
+        (r, c) = node
+        return 0 <= r < self.size[0] and 0 <= c < self.size[1]
 
     def get_gScore(self, node):
         try:
@@ -88,7 +86,7 @@ class Astar():
 
     def get_tentative_gScore(self, current, neighbor):
         return self.gScore[str(current)] + \
-               self.get_heuristic_cost(current, neighbor)
+            self.get_heuristic_cost(current, neighbor)
 
     def get_heuristic_cost(self, current, neighbor):
         # not implemented yet, placeholder
@@ -97,8 +95,9 @@ class Astar():
         m = self.M(neighbor)
         d = self.D(neighbor)
         d2 = self.D2(neighbor)
-        # return 3*v+1*n+50*m+150*d+50*d2
-        return 2.5*v+1*n+50*m+130*d+0*d2
+
+        return 3*v+1*n+50*m+150*d+50*d2
+        # return 2.5*v+1*n+50*m+130*d+0*d2
 
     def V(self, node):
         return abs(node[0] - self.start[0])
@@ -132,7 +131,7 @@ class Astar():
             else:
                 step += 1
 
-        return float(max_steps)
+        return float('inf')
 
     def downward_obstacle(self, node):
         step = 1
@@ -143,7 +142,7 @@ class Astar():
             else:
                 step += 1
 
-        return float(max_steps)
+        return float('inf')
 
     def get_best_fScore(self):
         min = float('inf')
@@ -161,4 +160,4 @@ class Astar():
             current = self.cameFrom[str(current)]
             total_path.append(current)
 
-        return total_path  # , self.closedSet
+        return total_path, self.map  # , self.closedSet

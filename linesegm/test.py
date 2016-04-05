@@ -1,1 +1,1 @@
-print min(2, 3)
+print 1 / (1 + float('inf'))
