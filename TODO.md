@@ -12,5 +12,5 @@ TODO LIST
 - FATTO - fare in modo che da terminale possa passare più di un'immagine e ciò corrisponda ad eseguire un ciclo
 - FATTO - implementare text line localization
 - provare dilatazione per migliorare la line localization
-- implementare A* e sue funzioni di costo
+- FATTO - implementare A* e sue funzioni di costo
 - creare groundtruth

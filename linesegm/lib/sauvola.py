@@ -16,8 +16,8 @@ def binarize(im, window, dr, k):
     std = variance ** 0.5
     # compute the threshold
     threshold = mean * (1 + k * (std / dr - 1))
-    # check_border = (mean >= 100)
-    # threshold = threshold * check_border
+    check_border = (mean >= 100)
+    threshold = threshold * check_border
     # apply the threshold to the image
     output = np.array(255 * (im >= threshold), 'uint8')
 

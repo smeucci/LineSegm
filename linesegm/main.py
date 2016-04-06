@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 from sys import argv
 from lib import sauvola, linelocalization, astar
 from time import time as timer
@@ -28,23 +29,24 @@ for filename in filenames:
     print '- Path planning with A*..'
     path = []
     for i in range(0, 1):
-        ys = 200
-        yg = 2600
-        step = 5
-        start = [indexes[i], ys]
-        goal = [indexes[i], yg]  # im.shape[1]-1]
+        start = [indexes[i], 0]
+        goal = [indexes[i], 1400]  # im.shape[1]-1]
         a = astar.Astar()
         path, map = a.pathfind(imbw, start, goal)
         print '\t# path: ' + str(path[::-1])
-        print map[indexes[i]-step:indexes[i]+step, ys:yg+2]
+
+    for p in path:
+        imbw[p[0], p[1]] = 0
+
+    immap = np.zeros((imbw.shape), dtype=np.int32)
+    for m in map:
+        immap[m[0], m[1]] = 255
 
     imbw_filename = str.replace(filename, '.', '_bw.')
     imbw_filename = str.replace(imbw_filename, 'data', 'data/bw')
     print 'Saving image "' + imbw_filename + '"..\n'
-    for p in path:
-        imbw[p[0], p[1]] = 0
-
     cv2.imwrite(imbw_filename, imbw)
-    cv2.imwrite('data/bw/test_map.jpg', map)
+    immap_filename = str.replace(imbw_filename, '_bw', '_map')
+    cv2.imwrite(immap_filename, immap)
 
 print ' - Elapsed time: ' + str((timer() - begin)) + ' s\n'
