@@ -33,24 +33,20 @@ class Astar():
         self.open = PriorityQueue()
         self.close = []
 
-    def pathfind(self, im, start, goal):
+    def pathfind(self, im, start, goal, step):
         # initialize
         self.im = im / 255
         self.start = start
         self.goal = goal
+        self.step = step
         self.open.put(self.start, self.heuristic(self.start, self.goal))
         self.gscore = np.zeros((self.im.shape), dtype=np.int32)
         self.gscore[tuple(self.start)] = 0
 
-        print '\t# start: ' + str(self.start) + " - goal: " + str(self.goal)
-
         while not self.open.empty():
 
-            if self.open.size() >= 10000:
-                self.open.flush()
-
             current = self.open.get()
-            self.print_info(current)
+            # self.print_info(current)
 
             if current == self.goal:
                 return self.reconstruct_path(current)
@@ -75,13 +71,15 @@ class Astar():
         return None
 
     def heuristic(self, current, goal):
-        return 30*((current[0] - goal[0])**2 + (current[1] - goal[1])**2)**0.5
+        # return abs(current[0] - goal[0]) + abs(current[1] - goal[1])
+        return 20*((current[0] - goal[0])**2 + (current[1] - goal[1])**2)**0.5
 
     def get_neighbors(self, current):
         r, c = current
-        neighbors = [[r - 1, c - 1], [r - 1, c], [r - 1, c + 1],
-                     [r, c - 1], [r, c + 1],
-                     [r + 1, c - 1], [r + 1, c], [r + 1, c + 1]]
+        s = self.step
+        neighbors = [[r - s, c - s], [r - s, c], [r - s, c + s],
+                     [r, c - s], [r, c + s],
+                     [r + s, c - s], [r + s, c], [r + s, c + s]]
         return filter(self.in_bounds, neighbors)
 
     def in_bounds(self, node):
@@ -100,8 +98,8 @@ class Astar():
         m = self.M(neighbor)
         d = self.D(neighbor)
         d2 = self.D2(neighbor)
-        # return 3*v+1*n+50*m+150*d+50*d2
-        return 2.5*v+1*n+50*m+130*d+0*d2
+        return 3*v+1*n+50*m+150*d+50*d2
+        # return 2.5*v+1*n+50*m+130*d+0*d2
 
     def V(self, node):
         return abs(node[0] - self.start[0])
