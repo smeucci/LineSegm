@@ -4,7 +4,7 @@ TODO LIST
 
 - implementare jump point search (neighbor pruning)
 - implementare subgoals
-- fare refactor con classi
+- fare refactor con classi, classe node etc
 - mettere controlli su dimensione finestra
 - mettere controllo su input files
 - migliorare sogliatura su parti non testuali

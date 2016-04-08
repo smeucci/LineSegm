@@ -5,8 +5,7 @@ import heapq
 class PriorityQueue():
 
     def __init__(self):
-        self.list = [0]
-        self.list.pop()
+        self.list = []
 
     def empty(self):
         return len(self.list) == 0
@@ -29,18 +28,18 @@ class PriorityQueue():
 class Astar():
 
     def __init__(self):
-        self.parent = {}
+        self.parents = {}
         self.open = PriorityQueue()
         self.close = []
 
     def pathfind(self, im, start, goal, step):
         # initialize
-        self.im = im / 255
+        self.grid = im / 255
         self.start = start
         self.goal = goal
         self.step = step
         self.open.put(self.start, self.heuristic(self.start, self.goal))
-        self.gscore = np.zeros((self.im.shape), dtype=np.int32)
+        self.gscore = np.zeros((self.grid.shape), dtype=np.int32)
         self.gscore[tuple(self.start)] = 0
 
         while not self.open.empty():
@@ -61,12 +60,12 @@ class Astar():
                 new_gscore = self.gscore[tuple(current)] + \
                     self.compute_cost(current, neighbor)
 
-                if (str(neighbor) not in self.parent or
+                if (str(neighbor) not in self.parents or
                         new_gscore < self.get_gscore(tuple(neighbor))):
                     self.gscore[tuple(neighbor)] = new_gscore
-                    fscore = new_gscore + self.heuristic(neighbor, goal)
+                    fscore = new_gscore + self.heuristic(neighbor, self.goal)
                     self.open.put(neighbor, fscore)
-                    self.parent[str(neighbor)] = current
+                    self.parents[str(neighbor)] = current
 
         return None
 
@@ -74,8 +73,8 @@ class Astar():
         # return abs(current[0] - goal[0]) + abs(current[1] - goal[1])
         return 20*((current[0] - goal[0])**2 + (current[1] - goal[1])**2)**0.5
 
-    def get_neighbors(self, current):
-        r, c = current
+    def get_neighbors(self, node):
+        r, c = node
         s = self.step
         neighbors = [[r - s, c - s], [r - s, c], [r - s, c + s],
                      [r, c - s], [r, c + s],
@@ -84,7 +83,7 @@ class Astar():
 
     def in_bounds(self, node):
         (r, c) = node
-        return 0 <= r < self.im.shape[0] and 0 <= c < self.im.shape[1]
+        return 0 <= r < self.grid.shape[0] and 0 <= c < self.grid.shape[1]
 
     def get_gscore(self, node):
         try:
@@ -111,9 +110,9 @@ class Astar():
             return 14.0
 
     def M(self, node):
-        if self.im[node[0], node[1]] == 1:
+        if self.grid[node[0], node[1]] == 1:
             return 0.0
-        elif self.im[node[0], node[1]] == 0:
+        elif self.grid[node[0], node[1]] == 0:
             return 1.0
 
     def D(self, neighbor):
@@ -127,7 +126,7 @@ class Astar():
     def upward_obstacle(self, node):
         step = 1
         while(step <= 50):
-            if self.im[node[0] - step, node[1]] == 0:
+            if self.grid[node[0] - step, node[1]] == 0:
                 return float(step)
             else:
                 step += 1
@@ -137,7 +136,7 @@ class Astar():
     def downward_obstacle(self, node):
         step = 1
         while(step <= 50):
-            if self.im[node[0] + step, node[1]] == 0:
+            if self.grid[node[0] + step, node[1]] == 0:
                 return float(step)
             else:
                 step += 1
@@ -146,8 +145,8 @@ class Astar():
 
     def reconstruct_path(self, current):
         total_path = [current]
-        while str(current) in self.parent:
-            current = self.parent[str(current)]
+        while str(current) in self.parents:
+            current = self.parents[str(current)]
             total_path.append(current)
 
         return total_path, self.close
@@ -158,3 +157,86 @@ class Astar():
         # print 'open: ' + str(self.open)
         # print 'close: ' + str(self.close)
         # print '------------------------------------'
+
+    ###################
+    # ----- JPS ----- #
+    ###################
+
+    def identify_successors(self, node):
+        if str(node) in self.parents:
+            parent = self.parents[str(node)]
+        else:
+            parent = None
+
+        neighbors = self.find_neighbors(node, parent)
+
+        for neighbor in neighbors:
+            jump_node = self.jump(node, neighbor)
+
+            if jump_node in self.close:
+                continue
+
+            new_gscore = self.gscore[tuple(node)] + \
+                self.compute_cost(node, neighbor)
+
+            if (str(jump_node) not in self.parents or
+                    new_gscore < self.get_gscore(tuple(jump_node))):
+                self.gscore[tuple(jump_node)] = new_gscore
+                fscore = new_gscore + self.heuristic(jump_node, self.goal)
+                self.open.put(jump_node, fscore)
+                self.parents[str(jump_node)] = node
+
+    def jump(self, node, neighbor, goal):
+        pass
+
+    def find_neighbors(self, node, parent):
+        if parent:
+            # get neighbors based on direction
+            neighbors = []
+            r, c = node
+            dr, dc = self.direction(node, parent)
+
+            # Diagonal direction
+            if dr != 0 and dc != 0:
+                neighbors.append([r, c + dc])
+                neighbors.append([r + dr, c])
+                neighbors.append([r + dr, c + dc])
+                # forced neighbors
+                if self.wall([r, c - dc]):
+                    neighbors.append([r + dr, c - dc])
+                if self.wall([r - dr, c]):
+                    neighbors.append([r - dr, c + dc])
+            # Columns direction
+            elif dc != 0:
+                neighbors.append([r, c + dc])
+                # forced neighbors
+                if self.wall([r + 1, c]):
+                    neighbors.append([r + 1, c + dc])
+                if self.wall([r - 1, c]):
+                    neighbors.append([r - 1, c + dc])
+            # Rows direction
+            elif dr != 0:
+                neighbors.append([r + dr, c])
+                # forced neighbors
+                if self.wall([r,  c + dc]):
+                    neighbors.append([r + dr, c + dc])
+                if self.wall([r, c - dc]):
+                    neighbors.append([r + dr, c - dc])
+
+            return neighbors
+        else:
+            # does not have a parent, return all the neighbors
+            return self.get_neighbors(node)
+
+    def direction(self, node, parent):
+        dr = (node[0] - parent[0])/max(abs(node[0] - parent[0]), 1)
+        dc = (node[1] - parent[1])/max(abs(node[1] - parent[1]), 1)
+
+        return dr, dc
+
+    def wall(self, node):
+        r, c = node
+        if self.grid[r, c] == 0:
+            return True
+        else:
+            return False
