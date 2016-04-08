@@ -57,11 +57,9 @@ class Astar():
                 if neighbor in self.close:
                     continue
 
-                new_gscore = self.gscore[tuple(current)] + \
-                    self.compute_cost(current, neighbor)
+                new_gscore = self.gscore[tuple(current)] + self.compute_cost(current, neighbor)
 
-                if (str(neighbor) not in self.parents or
-                        new_gscore < self.get_gscore(tuple(neighbor))):
+                if (str(neighbor) not in self.parents or new_gscore < self.get_gscore(tuple(neighbor))):
                     self.gscore[tuple(neighbor)] = new_gscore
                     fscore = new_gscore + self.heuristic(neighbor, self.goal)
                     self.open.put(neighbor, fscore)
@@ -116,12 +114,10 @@ class Astar():
             return 1.0
 
     def D(self, neighbor):
-        return 1 / (1 + min(self.upward_obstacle(neighbor),
-                            self.downward_obstacle(neighbor)))
+        return 1 / (1 + min(self.upward_obstacle(neighbor), self.downward_obstacle(neighbor)))
 
     def D2(self, neighbor):
-        return 1 / (1 + min(self.upward_obstacle(neighbor),
-                            self.downward_obstacle(neighbor)) ** 2)
+        return 1 / (1 + min(self.upward_obstacle(neighbor), self.downward_obstacle(neighbor)) ** 2)
 
     def upward_obstacle(self, node):
         step = 1
@@ -176,11 +172,9 @@ class Astar():
             if jump_node in self.close:
                 continue
 
-            new_gscore = self.gscore[tuple(node)] + \
-                self.compute_cost(node, neighbor)
+            new_gscore = self.gscore[tuple(node)] + self.compute_cost(node, neighbor)
 
-            if (str(jump_node) not in self.parents or
-                    new_gscore < self.get_gscore(tuple(jump_node))):
+            if (str(jump_node) not in self.parents or new_gscore < self.get_gscore(tuple(jump_node))):
                 self.gscore[tuple(jump_node)] = new_gscore
                 fscore = new_gscore + self.heuristic(jump_node, self.goal)
                 self.open.put(jump_node, fscore)
