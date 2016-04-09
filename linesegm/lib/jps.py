@@ -1,94 +1,87 @@
+from lib import astar
 
 
-def identify_successors(grid, node, parent, open, close, parents, goal):
-    if str(node) in parents:
-        parent = parents[str(node)]
-    else:
-        parent = None
+class Jps():
 
-    neighbors = find_neighbors(grid, node, parent)
+    def __init__(self,  grid):
+        self.finder = astar.Astar(grid)
 
-    for neighbor in neighbors:
-        jump_node = jump(grid, node, neighbor, goal)
+    def pathfind(self, start, goal):
+        self.finder.open.put(start, self.finder.heuristic(start, goal))
 
-        if str(jump_node) in close:
-            continue
-        # not implemented yet, just a scheme
-        new_gscore = gscore + compute_cost()
-        if jump_node not in parents and new_gscore < gscore:
-            gscore = new_gscore
-            fscore = new_gscore + heuristic()
-            open.put(jump_node, fscore)
-            parent[str(jump_node)] = node
+    def identify_successors(self, node):
+        if str(node) in self.parents:
+            parent = self.parents[str(node)]
+        else:
+            parent = None
 
-def jump(grid, node, neighbor, goal):
-    pass
+        neighbors = self.find_neighbors(node, parent)
 
+        for neighbor in neighbors:
+            jump_node = self.jump(node, neighbor)
 
-def find_neighbors(grid, node, parent):
-    if parent:
-        # get neighbors based on direction
-        neighbors = []
-        r, c = node
-        dr, dc = direction(node, parent)
+            if jump_node in self.close:
+                continue
 
-        # Diagonal direction
-        if dr != 0 and dc != 0:
-            neighbors.append([r, c + dc])
-            neighbors.append([r + dr, c])
-            neighbors.append([r + dr, c + dc])
-            # forced neighbors
-            if wall(grid, [r, c - dc]):
-                neighbors.append([r + dr, c - dc])
-            if wall(grid, [r - dr, c]):
-                neighbors.append([r - dr, c + dc])
-        # Columns direction
-        elif dc != 0:
-            neighbors.append([r, c + dc])
-            # forced neighbors
-            if wall(grid, [r + 1, c]):
-                neighbors.append([r + 1, c + dc])
-            if wall(grid, [r - 1, c]):
-                neighbors.append([r - 1, c + dc])
-        # Rows direction
-        elif dr != 0:
-            neighbors.append([r + dr, c])
-            # forced neighbors
-            if wall(grid, [r,  c + dc]):
+            new_gscore = self.gscore[tuple(node)] + self.compute_cost(node, neighbor)
+
+            if (str(jump_node) not in self.parents or new_gscore < self.get_gscore(tuple(jump_node))):
+                self.gscore[tuple(jump_node)] = new_gscore
+                fscore = new_gscore + self.heuristic(jump_node, self.goal)
+                self.open.put(jump_node, fscore)
+                self.parents[str(jump_node)] = node
+
+    def jump(self, node, neighbor, goal):
+        pass
+
+    def find_neighbors(self, node, parent):
+        if parent:
+            # get neighbors based on direction
+            neighbors = []
+            r, c = node
+            dr, dc = self.direction(node, parent)
+
+            # Diagonal direction
+            if dr != 0 and dc != 0:
+                neighbors.append([r, c + dc])
+                neighbors.append([r + dr, c])
                 neighbors.append([r + dr, c + dc])
-            if wall(grid, [r, c - dc]):
-                neighbors.append([r + dr, c - dc])
+                # forced neighbors
+                if self.wall([r, c - dc]):
+                    neighbors.append([r + dr, c - dc])
+                if self.wall([r - dr, c]):
+                    neighbors.append([r - dr, c + dc])
+            # Columns direction
+            elif dc != 0:
+                neighbors.append([r, c + dc])
+                # forced neighbors
+                if self.wall([r + 1, c]):
+                    neighbors.append([r + 1, c + dc])
+                if self.wall([r - 1, c]):
+                    neighbors.append([r - 1, c + dc])
+            # Rows direction
+            elif dr != 0:
+                neighbors.append([r + dr, c])
+                # forced neighbors
+                if self.wall([r,  c + dc]):
+                    neighbors.append([r + dr, c + dc])
+                if self.wall([r, c - dc]):
+                    neighbors.append([r + dr, c - dc])
 
-        return neighbors
-    else:
-        # does not have a parent, return all the neighbors
-        return get_neighbors(grid, node)
+            return neighbors
+        else:
+            # does not have a parent, return all the neighbors
+            return self.get_neighbors(node)
 
+    def direction(self, node, parent):
+        dr = (node[0] - parent[0])/max(abs(node[0] - parent[0]), 1)
+        dc = (node[1] - parent[1])/max(abs(node[1] - parent[1]), 1)
 
-def direction(node, parent):
-    dr = (node[0] - parent[0])/max(abs(node[0] - parent[0]), 1)
-    dc = (node[1] - parent[1])/max(abs(node[1] - parent[1]), 1)
+        return dr, dc
 
-    return dr, dc
-
-
-def wall(grid, node):
-    r, c = node
-    if grid[r, c] == 0:
-        return True
-    else:
-        return False
-
-
-def get_neighbors(grid, node):
-    r, c = node
-    s = 1
-    neighbors = [[r - s, c - s], [r - s, c], [r - s, c + s],
-                 [r, c - s], [r, c + s],
-                 [r + s, c - s], [r + s, c], [r + s, c + s]]
-    return filter(lambda x: in_bounds(grid, x), neighbors)
-
-
-def in_bounds(grid, node):
-    (r, c) = node
-    return 0 <= r < grid.shape[0] and 0 <= c < grid.shape[1]
+    def wall(self, node):
+        r, c = node
+        if self.grid[r, c] == 0:
+            return True
+        else:
+            return False

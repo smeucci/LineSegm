@@ -14,3 +14,20 @@ TODO LIST
 - provare dilatazione per migliorare la line localization
 - FATTO - implementare A* e sue funzioni di costo
 - creare groundtruth
+
+
+main
+    - sauvola
+    - linelocalization
+    - pathfinder
+        - astar
+        - jps
+
+
+main chiama pathfinder
+pathfinder crea open, close, grid, crea oggetto astar passando gli quei parametri
+posso chiamare pathfind di astar per trovare path con astar normale
+per jps? in pathfinder creo astar con i soliti parametri, creo jps passandogli l'oggetto astar
+posso chiamare pathfind di jps per trovare path con astar + jps
+in jps c'è la struttura simile ad astar più identify_successors, jump etc
+in astar c'è l'algoritmo di pathfind e le varie funzioni di costo, in più tiene le liste e la mappa

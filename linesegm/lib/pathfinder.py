@@ -1,0 +1,29 @@
+from lib import astar, jps
+from time import time as timer
+
+
+def search(grid, type, line):
+
+    begin_search = timer()
+
+    start, goal = get_start_and_goal(line, grid)
+
+    print 'start: ' + str(start) + " - goal: " + str(goal),
+
+    if type == 'A':
+
+        a = astar.Astar(grid)
+        path, map = a.pathfind(start, goal)
+
+    elif type == 'jps':
+
+        j = jps.Jps(grid)
+        path, map = j.pathfind(start, goal)
+
+    print ' => path found in ' + str(timer() - begin_search) + ' s'
+
+    return path, map
+
+
+def get_start_and_goal(line, grid):
+    return [line, 0], [line, grid.shape[1]-2]
