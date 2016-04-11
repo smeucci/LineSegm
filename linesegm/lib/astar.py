@@ -46,42 +46,41 @@ class Astar():
         self.grid = grid / 255
         self.open = PriorityQueue()
         self.close = []
-        self.step = 2
+        self.step = 1
 
     def pathfind(self, start, goal):
         # initialize
-        start = Node(start[0], start[1])
-        goal = Node(goal[0], goal[1])
-        start.gscore = 0
-        self.open.put(start, self.heuristic(start, goal))
+        self.start = Node(start[0], start[1])
+        self.goal = Node(goal[0], goal[1])
+        self.start.gscore = 0
+        self.open.put(self.start, self.heuristic(self.start, self.goal))
 
         while not self.open.empty():
 
             current = self.open.get()
+            self.close.append(current)
             # print current
 
-            if current == goal:
+            if current == self.goal:
                 return self.reconstruct_path(current)
-
-            self.close.append(current)
 
             for neighbor in self.get_neighbors(current):
 
                 if neighbor in self.close:
                     continue
 
-                new_gscore = current.gscore + self.compute_cost(current, neighbor, start)
+                new_gscore = current.gscore + self.compute_cost(current, neighbor, self.start)
 
                 if neighbor.parent is None or new_gscore < neighbor.gscore:
                     neighbor.gscore = new_gscore
-                    fscore = new_gscore + self.heuristic(neighbor, goal)
+                    fscore = new_gscore + self.heuristic(neighbor, self.goal)
                     neighbor.parent = current
                     self.open.put(neighbor, fscore)
 
         return None
 
     def heuristic(self, current, goal):
-        return 20*((current.row - goal.row)**2 + (current.col - goal.col)**2)**0.5
+        return 40*((current.row - goal.row)**2 + (current.col - goal.col)**2)**0.5
 
     def get_neighbors(self, node):
         r, c = node.row, node.col
@@ -128,7 +127,7 @@ class Astar():
 
     def upward_obstacle(self, node):
         step = 1
-        while(step <= 50):
+        while(step <= 10):
             if self.grid[node.row - step, node.col] == 0:
                 return float(step)
             else:
@@ -138,7 +137,7 @@ class Astar():
 
     def downward_obstacle(self, node):
         step = 1
-        while(step <= 50):
+        while(step <= 10):
             if self.grid[node.row + step, node.col] == 0:
                 return float(step)
             else:

@@ -56,9 +56,10 @@ for filename in filenames:
     print '- Path planning with A*..'
 
     immap = np.zeros((imbw.shape), dtype=np.int32)
+    lines = [30]
     for i in range(0, 1):
         line = lines[i]
-        path, map = pathfinder.search(imbw, 'A', line)
+        path, map = pathfinder.search(imbw, 'jps', line)
         draw_line(imbw, path)
         draw_map(immap, map)
 

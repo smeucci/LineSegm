@@ -6,7 +6,8 @@ def search(grid, type, line):
 
     begin_search = timer()
 
-    start, goal = get_start_and_goal(line, grid)
+    # start, goal = get_start_and_goal(line, grid)
+    start, goal = [line, 0], [line + 1, 41]
 
     print 'start: ' + str(start) + " - goal: " + str(goal),
 
