@@ -12,7 +12,7 @@ def draw_line(im, path):
 
 def draw_map(im, map):
     for m in map:
-        im[m.row, m.col] = 255
+        im[m[0], m[1]] = 255
 
 
 def print_path(path):
@@ -53,15 +53,17 @@ for filename in filenames:
     lines = linelocalization.localize(imbw)
     print ' => ' + str(len(lines)) + ' lines detected.'
 
-    print '- Path planning with A*..'
+    print '- Path planning with ',
 
     immap = np.zeros((imbw.shape), dtype=np.int32)
-    lines = [30]
-    for i in range(0, 1):
-        line = lines[i]
-        path, map = pathfinder.search(imbw, 'jps', line)
+    # lines = [50]
+    # for i in range(0, 1):
+    for line in lines:
+        # line = lines[i]
+        path, map = pathfinder.search(imbw, 'A', line)
         draw_line(imbw, path)
         draw_map(immap, map)
+        # print_path(path)
 
     save(filename, imbw, immap)
 

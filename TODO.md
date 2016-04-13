@@ -20,6 +20,8 @@ Problemi:
 - fare jump iterativo
 - creare grid con matlab
 
+FATTO - RICONTROLLARE I SEGNI IN JUMP E IN FIND_NEIGHBORS
+
 
 main
     - sauvola

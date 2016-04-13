@@ -1,28 +1,21 @@
-class Node():
+import cv2
+import numpy as np
+from sys import argv
+from lib import sauvola, linelocalization, pathfinder
+from time import time as timer
 
-    def __init__(self, row, col):
-        self.row = row
-        self.col = col
-        self.gscore = float('inf')
-        self.parent = None
 
-    def __eq__(self, other):
-        return self.__dict__ == other.__dict__
+filename = 'data/test3.jpg'
 
-    def __str__(self):
-        return '(' + str(self.row) + ', ' + str(self.col) + ')'
+print 'Reading image "' + filename + '"..'
+im = cv2.imread(filename, 0)
 
-    def __hash__(self):
-        return hash(str(self))
+print '- Thresholding image..'
+imbw = sauvola.binarize(im, [20, 20], 128, 0.3)
 
-a = Node(4, 5)
-b = Node(4, 4)
-b.gscore = 1
-a.gscore = 1
-print a == b
-print 'asd ' + str(a)
-d = {}
-d[a] = b
-print a in d
-r, c = a.row, a.col
-print r, c
+imbw = cv2.medianBlur(imbw, 1)
+
+imbw_filename = str.replace(filename, '.', '_bw.')
+imbw_filename = str.replace(imbw_filename, 'data', 'data/bw')
+print 'Saving image "' + imbw_filename + '"..\n'
+cv2.imwrite(imbw_filename, imbw)
