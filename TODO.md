@@ -15,6 +15,9 @@ TODO LIST
 - FATTO - implementare A* e sue funzioni di costo
 - creare groundtruth
 
+
+meno neighbors in get_neighbors
+
 Problemi:
 - aggiungere controllo di in bounds nella funzione jump
 - fare jump iterativo

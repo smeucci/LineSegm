@@ -76,11 +76,9 @@ class Astar():
     def get_neighbors(self, node):
         r, c = node
         s = self.step
-        neighbors = [[r - s, c - s], [r - s, c], [r - s, c + s],
-                     [r, c - s], [r, c + s],
-                     [r + s, c - s], [r + s, c], [r + s, c + s]]
-        neighbors = filter(self.in_bounds, neighbors)
-        return filter(self.walkable, neighbors)
+        neighbors = [[r - s, c + s], [r, c + s], [r + s, c + s]]
+        return filter(self.in_bounds, neighbors)
+        # return filter(self.walkable, neighbors)
 
     def in_bounds(self, node):
         r, c = node
@@ -108,8 +106,8 @@ class Astar():
         m = self.M(neighbor)
         d = self.D(neighbor)
         d2 = self.D2(neighbor)
-        return 3*v+1*n+50*m+150*d+50*d2
-        # return 2.5*v+1*n+50*m+130*d+0*d2
+        # return 3*v+1*n+50*m+150*d+50*d2
+        return 2.5*v+1*n+50*m+130*d+0*d2
 
     def V(self, node, start):
         return abs(node[0] - start[0])
