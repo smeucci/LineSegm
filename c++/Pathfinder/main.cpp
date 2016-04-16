@@ -20,17 +20,21 @@ int main () {
 	Mat image = imread(filename, 0) / 255;
 	cout << image << endl;
 
-	Node start = Node(5, 0);
-	Node goal = Node(5, 9);
+	Node* start = new Node(5, 0);
+	Node* goal = new Node(5, 9);
 
-	Astar astar = Astar(&image);
+	Astar* astar = new Astar(&image);
 
-	vector<Node> path = astar.pathfind(&start, &goal);
+	vector<Node*> path = astar->pathfind(start, goal);
 
-	for (Node node : path) {
-		cout << node << endl;
+	Mat image_path = image;
+	reverse(path.begin(), path.end());
+	for (Node* node : path) {
+		cout << *node << " ";
+		image_path.at<uchar>(node->row(), node->col()) = (uchar) 88;
 	}
+	cout << endl;
 
-
+	cout << image_path << endl;
 
 }

@@ -56,7 +56,7 @@ for filename in filenames:
     print '- Path planning with ',
 
     immap = np.zeros((imbw.shape), dtype=np.int32)
-    # lines = [50]
+    lines = [50]
     # for i in range(0, 1):
     for line in lines:
         # line = lines[i]

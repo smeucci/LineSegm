@@ -51,9 +51,9 @@ void Node :: parent (Node* parent) {
 	this->p = parent;
 }
 
-bool Node :: operator==(Node& node) {
+bool Node :: operator==(Node* node) {
 
-	if (this->r == node.row() and this->c == node.col()) {
+	if (this->r == node->row() and this->c == node->col()) {
 		return true;
 	} else {
 		return false;

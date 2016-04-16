@@ -6,8 +6,8 @@ def search(grid, type, line):
 
     begin_search = timer()
 
-    start, goal = get_start_and_goal(line, grid)
-    # start, goal = [line, 0], [line - 10, 119]
+    # start, goal = get_start_and_goal(line, grid)
+    start, goal = [line, 0], [line + 50, 700]
 
     if type == 'A':
         print 'A*..'

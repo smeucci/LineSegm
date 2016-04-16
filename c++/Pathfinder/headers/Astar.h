@@ -34,9 +34,9 @@ class Astar {
 		Astar (Mat* grid);
 		~Astar ();
 
-		vector<Node> pathfind (Node* start, Node* goal);
+		vector<Node*> pathfind (Node* start, Node* goal);
 		double heuristic (Node* node1, Node* node2);
-		vector<Node> get_neighbors (Node node);
+		vector<Node*> get_neighbors (Node* node);
 		bool in_bounds (Node* node);
 		bool is_wall (Node* node);
 		double compute_cost (Node* current, Node* neighbor, Node* start);
@@ -47,7 +47,7 @@ class Astar {
 		double D2 (Node* node);
 		double upward_obstacle (Node* node);
 		double downward_obstacle (Node* node);
-		vector<Node> reconstruct_path (vector<Node*> closedSet);
+		vector<Node*> reconstruct_path (vector<Node*> closedSet);
 
 };
 

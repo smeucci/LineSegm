@@ -39,7 +39,7 @@ class Node {
 		void fscore (double fscore);
 		void parent (Node* parent);
 
-		bool operator==(Node& node);
+		bool operator==(Node* node);
 		friend ostream& operator<<(ostream& os, const Node& node);
 
 };

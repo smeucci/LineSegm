@@ -34,7 +34,7 @@ class Astar():
         self.grid = grid / 255
         self.gscore = np.zeros((self.grid.shape), dtype=np.int32)
         # print self.grid
-        self.step = 2
+        self.step = 1
 
     def pathfind(self, start, goal):
         # initialize
@@ -47,7 +47,7 @@ class Astar():
         while not self.open.empty():
 
             current = self.open.get()
-            # self.print_info(current)
+            self.print_info(current)
 
             if current == self.goal:
                 return self.reconstruct_path(current)
