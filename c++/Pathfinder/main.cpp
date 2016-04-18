@@ -1,40 +1,43 @@
 /*
  * main.cpp
  *
- *  Created on: Apr 14, 2016
+ *  Created on: Apr 18, 2016
  *      Author: saverio
  */
 
-#include <iostream>
-#include <string>
-#include <opencv2/opencv.hpp>
-#include "headers/Node.h"
-#include "headers/Astar.h"
+#include "utils.cpp"
+#include "opencv2/opencv.hpp"
+#include <ctime>
 
 using namespace std;
 using namespace cv;
 
 int main () {
 
-	string filename = "test.jpg";
-	Mat image = imread(filename, 0) / 255;
-	cout << image << endl;
+	 clock_t begin = clock();
 
-	Node* start = new Node(5, 0);
-	Node* goal = new Node(5, 9);
+	Map map;
+	map.grid = imread("data/test4.jpg", 0) / 255;
 
-	Astar* astar = new Astar(&image);
+	//cout << map.grid << endl;
 
-	vector<Node*> path = astar->pathfind(start, goal);
+	typedef Map::Node Node;
+	Node start{136, 0};
+	Node goal{136, 1500};
 
-	Mat image_path = image;
-	reverse(path.begin(), path.end());
-	for (Node* node : path) {
-		cout << *node << " ";
-		image_path.at<uchar>(node->row(), node->col()) = (uchar) 88;
-	}
-	cout << endl;
+	cout << "From [" << get<0>(start) << ", " << get<1>(start) << "]";
+	cout << " To [" << get<0>(goal) << ", " << get<1>(goal) << "]" << endl;
 
-	cout << image_path << endl;
+	unordered_map<Node, Node> parents;
+	unordered_map<Node, double> gscore;
+
+	astar(map, start, goal, parents, gscore);
+
+	vector<Node> path = reconstruct_path(start, goal, parents);
+	draw_path(map.grid, path);
+
+	clock_t end = clock();
+	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+	cout << "- Elapsed Time: " << elapsed_secs << endl;
 
 }
