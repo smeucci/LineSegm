@@ -8,11 +8,6 @@
 
 #include "opencv2/opencv.hpp"
 
-#define uget(x,y)    at<unsigned char>(y,x)
-#define uset(x,y,v)  at<unsigned char>(y,x)=v;
-#define fget(x,y)    at<double>(y,x)
-#define fset(x,y,v)  at<double>(y,x)=v;
-
 using namespace cv;
 using namespace std;
 
@@ -96,8 +91,8 @@ inline void binarize (Mat& im, Mat& output, int window, double dr, double k) {
 
 		for	(int j = 0; j <= im.cols - window_width; j++) {
 
-			mean  = im_mean.fget(j + m, i);
-			std  = im_std.fget(j + m, i);
+			mean = im_mean.at<double>(i, j + m);
+			std = im_std.at<double>(i, j + m);
 
 			th = mean * (1 + k * (std / dr - 1));
 
