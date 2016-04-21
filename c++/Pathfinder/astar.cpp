@@ -9,6 +9,7 @@
 #include <queue>
 #include <algorithm>
 #include <unordered_map>
+#include <string>
 
 using namespace cv;
 using namespace std;
@@ -141,6 +142,7 @@ inline double compute_cost (const Graph& graph, typename Graph::Node current, ty
 	tie (d, d2) = ds;
 
 	return 3*v + 1*n + 50*m + 150*d + 50*d2;
+	//return 2.5*v + 1*n + 50*m + 130*d + 0*d2;
 }
 
 namespace std {
@@ -208,13 +210,28 @@ inline void astar (const Graph& graph, typename Graph::Node start, typename Grap
 
 template<typename Node>
 inline void draw_path (Mat& graph, vector<Node>& path) {
-	Mat map = graph;
 	for (auto node : path) {
 		int row, col;
 		tie (row, col) = node;
-		map.at<uchar>(row, col) = (uchar) 0;
+		graph.at<uchar>(row, col) = (uchar) 0;
 	}
-	imwrite("data/map.jpg", map*255);
+	imwrite("data/map.jpg", graph*255);
 }
 
+template<typename Node>
+inline void segment_line (Mat& graph, Mat& output, vector<Node> path, int num){
+
+	for (auto node: path) {
+
+		int row, col;
+		tie(row, col) = node;
+		for (int i = row; i < graph.rows; i++) {
+
+			output.at<uchar>(i, col) = (uchar) 255;
+
+		}
+
+	}
+
+}
 

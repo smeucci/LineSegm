@@ -87,7 +87,7 @@ inline void binarize (Mat& im, Mat& output, int window, double dr, double k) {
 
 	Mat threshold (im.rows, im.cols, CV_64F);
 
-	for	(int i = m; i <= im.cols - m - 1; i++) {
+	for	(int i = m; i <= im.rows - m - 1; i++) {
 
 		for	(int j = 0; j <= im.cols - window_width; j++) {
 
