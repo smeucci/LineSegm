@@ -45,10 +45,8 @@ inline void compute_integrals (Mat& im, Mat& im_mean, Mat& im_std, int window) {
 		im_mean.at<double>(i, m) = mean;
 		im_std.at<double>(i, m) = std;
 
-		// Shift the window, add and remove	new/old values to the histogram
 		for (int j = 1; j <= im.cols - window_height; j++) {
 
-			// Remove the left old column and add the right new column
 			sum -= im_sum.at<double>(i - m + window_width, j) - im_sum.at<double>(i - m, j) -
 				   im_sum.at<double>(i - m + window_width, j - 1) + im_sum.at<double>(i - m, j - 1);
 
