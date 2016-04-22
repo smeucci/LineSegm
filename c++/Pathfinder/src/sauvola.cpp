@@ -36,7 +36,7 @@ inline void compute_integrals (Mat& im, Mat& im_mean, Mat& im_std, int window) {
 			  im_sum.at<double>(i - m + window_width, 0) + im_sum.at<double>(i - m, 0);
 
 		sqsum = im_sqsum.at<double>(i - m + window_width, window_height) - im_sqsum.at<double>(i - m, window_height) -
-			    im_sqsum.at<double>(i - m + window_width, 0) + im_sqsum.at<double>(i - m, 0);
+				im_sqsum.at<double>(i - m + window_width, 0) + im_sqsum.at<double>(i - m, 0);
 
 		mean  = sum / window_area;
 		std  = sqrt((sqsum - mean * sum) / window_area);
@@ -70,7 +70,6 @@ inline void compute_integrals (Mat& im, Mat& im_mean, Mat& im_std, int window) {
 }
 
 inline void binarize (Mat& im, Mat& output, int window, double dr, double k) {
-
 
 	Mat im_mean = Mat::zeros (im.rows, im.cols, CV_64F);
 	Mat im_std = Mat::zeros (im.rows, im.cols, CV_64F);
