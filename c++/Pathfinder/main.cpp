@@ -5,83 +5,71 @@
  *      Author: saverio
  */
 
+
 #include "opencv2/opencv.hpp"
 #include <ctime>
-#include "sauvola.cpp"
-#include "linelocalization.cpp"
-#include "astar.cpp"
+#include "src/utils.cpp"
+#include "src/sauvola.cpp"
+#include "src/linelocalization.cpp"
+#include "src/astar.cpp"
 
 using namespace std;
 using namespace cv;
+
 
 int main () {
 
 	clock_t begin = clock();
 
-	Mat im = imread("data/test6.jpg", 0);
+	string filename = "data/test6.jpg";
+	Mat im = imread(filename, 0);
 	Mat imbw (im.rows, im.cols, CV_8U);
-	cout << "Thresholding.." << endl;
+
+	cout << "- Thresholding.." << endl;
 	binarize(im, imbw, 20, 128, 0.3);
-	imwrite("data/bw.jpg", imbw);
-	cout << "Detecting lines location..";
+
+	cout << "- Detecting lines location..";
 	vector<int> lines = localize(imbw, 0.3);
-	cout << "==> " << lines.size() << " lines found." << endl;
-
-	if (true) {
-		Map map;
-		map.grid = imbw / 255;
-		map.dmat = map.grid;
-
-		for (int i = 0; i < map.grid.cols; i++) {
-
-			Mat column = map.grid(Rect(i, 0, 1, map.grid.rows));
-			Mat dcol;
-			distanceTransform(column, dcol, CV_DIST_L2, 5);
-			dcol.copyTo(map.dmat.col(i));
-		}
-
-		typedef Map::Node Node;
-		vector<vector<Node>> paths;
-		Mat p = map.grid.clone();
-		for (vector<int>::iterator itr = lines.begin(); itr != lines.end(); itr++) {
-			Node start{*itr, 0};
-			Node goal{*itr, map.grid.cols - 1};
-
-			cout << "From [" << get<0>(start) << ", " << get<1>(start) << "]";
-			cout << " to [" << get<0>(goal) << ", " << get<1>(goal) << "]" << endl;
-
-			unordered_map<Node, Node> parents;
-			unordered_map<Node, double> gscore;
-
-			astar(map, start, goal, parents, gscore);
-
-			vector<Node> path = reconstruct_path(start, goal, parents);
-			draw_path(p, path);
-			paths.push_back(path);
-		}
+	cout << " ==> " << lines.size() << " lines found." << endl;
 
 
-		vector<Mat> images;
-		for (unsigned int i = 0; i < paths.size() - 1; i++) {
-			Mat s = map.grid.clone() * 255;
-			Mat im1 = s;
-			Mat im2 = s;
-			segment_line(s, im1, paths[i], i);
-			segment_line(s, im2, paths[i+1], i+1);
+	cout << "- Starting line segmentation with A* path planning algorithm.." << endl;
+	Map map;
+	map.grid = imbw / 255;
+	map.dmat = distance_transform(map.grid);
 
-			im2 = im2 - im1;
 
-			imwrite("data/segmented/line_" + to_string(i) + ".jpg", im1);
-			imwrite("data/segmented/line_" + to_string(i+1) + ".jpg", im2);
+	typedef Map::Node Node;
+	vector<vector<Node>> paths;
+	Mat image_path = map.grid.clone();
+	for (vector<int>::iterator itr = lines.begin(); itr != lines.end(); itr++) {
 
-		}
+		clock_t _start = clock();
 
+		Node start{*itr, 0};
+		Node goal{*itr, map.grid.cols - 1};
+
+		cout << "\t# from [" << get<0>(start) << ", " << get<1>(start) << "]";
+		cout << " to [" << get<0>(goal) << ", " << get<1>(goal) << "]";
+
+		unordered_map<Node, Node> parents;
+		unordered_map<Node, double> gscore;
+
+		astar(map, start, goal, parents, gscore);
+
+		vector<Node> path = reconstruct_path(start, goal, parents);
+		draw_path(image_path, path);
+		paths.push_back(path);
+
+		clock_t _finish = clock();
+
+		cout << " ==> path found in " + to_string(double(_finish - _start) / CLOCKS_PER_SEC) << endl;
 	}
 
-
+	cout << "\n- Segmenting lines and saving images.." << endl;
+	line_segmentation(imbw, paths);
 
 	clock_t end = clock();
 	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-	cout << "- Elapsed Time: " << elapsed_secs << endl;
-
+	cout << "\n- Elapsed Time: " << elapsed_secs << endl;
 }

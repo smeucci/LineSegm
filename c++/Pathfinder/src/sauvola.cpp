@@ -30,7 +30,7 @@ inline void compute_integrals (Mat& im, Mat& im_mean, Mat& im_std, int window) {
 	Mat im_sum, im_sqsum;
 	cv::integral(im, im_sum, im_sqsum, CV_64F);
 
-	for	(int i = m; i <= im.rows - m - 1; i++){
+	for (int i = m; i <= im.rows - m - 1; i++){
 		sum = sqsum = 0;
 
 		sum = im_sum.at<double>(i - m + window_width, window_height) - im_sum.at<double>(i - m, window_height) -
@@ -153,7 +153,7 @@ inline void binarize (Mat& im, Mat& output, int window, double dr, double k) {
 		}
 	}
 
-	for	(int i = 0; i < im.rows; ++i) {
+	for (int i = 0; i < im.rows; ++i) {
 		for	(int j = 0; j < im.cols; ++j) {
 			if ((double) im.at<uchar>(i, j) >= threshold.at<double>(i, j)) {
 				output.at<uchar>(i, j) = (uchar) 255;
@@ -163,7 +163,4 @@ inline void binarize (Mat& im, Mat& output, int window, double dr, double k) {
 		}
 	}
 
-
 }
-
-

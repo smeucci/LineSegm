@@ -7,12 +7,13 @@
 
 
 #include "opencv2/opencv.hpp"
-#include "persistence1d.hpp"
+#include "../lib/persistence1d.hpp"
 #include <algorithm>
 
 using namespace cv;
 using namespace std;
 using namespace p1d;
+
 
 inline void invert (Mat& im, Mat& output) {
 	output = abs(255 - im) / 255;
@@ -45,7 +46,6 @@ inline vector<int> detect_peaks (Mat& hist, double delta) {
 	}
 
 	return lines;
-
 }
 
 inline vector<int> projection_analysis (Mat& im, double delta) {
@@ -66,7 +66,6 @@ inline vector<int> projection_analysis (Mat& im, double delta) {
 	delta = hist_mean / max + hist_std / max;
 
 	return detect_peaks (hist, delta);
-
 }
 
 inline vector<int> localize (Mat& input, double delta) {
@@ -85,5 +84,4 @@ inline vector<int> localize (Mat& input, double delta) {
 	}
 
 	return lines;
-
 }

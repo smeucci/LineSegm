@@ -439,7 +439,7 @@ protected:
 	{
 		TPairedExtrema pair; 
 		
-		//There might be a potential bug here, todo (we're checking data, not sorted data)
+		//There might be a potential bug here, todo_ (we're checking data, not sorted data)
 		//example case: 1 1 1 1 1 1 -5 might remove if after else
 		if (Data[firstIdx] > Data[secondIdx])
 		{

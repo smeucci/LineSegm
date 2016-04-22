@@ -5,6 +5,7 @@
  *      Author: saverio
  */
 
+
 #include "opencv2/opencv.hpp"
 #include <queue>
 #include <algorithm>
@@ -14,14 +15,15 @@
 using namespace cv;
 using namespace std;
 
+
 struct Map {
 
 	typedef tuple<int, int> Node;
 	Mat grid;
 	Mat dmat;
 	Node directions[8] = {Node{-1, -1}, Node{-1, 0}, Node{-1, 1},
-					Node{0, -1}, Node{0, 1},
-					Node{1, -1}, Node{1, 0}, Node{1, 1}};
+						  Node{0, -1}, Node{0, 1},
+						  Node{1, -1}, Node{1, 0}, Node{1, 1}};
 
 	inline bool in_bounds (Node node) const {
 		int row, col;
@@ -175,8 +177,6 @@ inline void astar (const Graph& graph, typename Graph::Node start, typename Grap
 			unordered_map<typename Graph::Node, typename Graph::Node>& parents,
 			unordered_map<typename Graph::Node, double>& gscore) {
 
-	cout << "start" << endl;
-
 	typedef typename Graph::Node Node;
 	PriorityQueue<Node> openSet;
 	openSet.put(start, 0);
@@ -185,9 +185,6 @@ inline void astar (const Graph& graph, typename Graph::Node start, typename Grap
 	while (not openSet.empty()) {
 
 		auto current = openSet.get();
-//		int row, col;
-//		tie (row, col) = current;
-//		cout << row << ", " << col << endl;
 
 		if (current == goal) {
 			break;
@@ -204,34 +201,4 @@ inline void astar (const Graph& graph, typename Graph::Node start, typename Grap
 		}
 	}
 
-	cout << "end" << endl;
-
 }
-
-template<typename Node>
-inline void draw_path (Mat& graph, vector<Node>& path) {
-	for (auto node : path) {
-		int row, col;
-		tie (row, col) = node;
-		graph.at<uchar>(row, col) = (uchar) 0;
-	}
-	imwrite("data/map.jpg", graph*255);
-}
-
-template<typename Node>
-inline void segment_line (Mat& graph, Mat& output, vector<Node> path, int num){
-
-	for (auto node: path) {
-
-		int row, col;
-		tie(row, col) = node;
-		for (int i = row; i < graph.rows; i++) {
-
-			output.at<uchar>(i, col) = (uchar) 255;
-
-		}
-
-	}
-
-}
-
