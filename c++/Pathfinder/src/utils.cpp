@@ -60,10 +60,10 @@ inline void line_segmentation (Mat& input, vector<vector<Node>> paths) {
 	}
 	segmented_images.push_back(input);
 
-	imwrite("data/segmented/lines_" + to_string(0) + ".jpg", segmented_images[0]);
+	imwrite("data/segmented/lines_" + to_string(1) + ".jpg", segmented_images[0]);
 	for (unsigned int i = 1; i < segmented_images.size(); i++) {
 		Mat output = abs(255 - segmented_images[i]) - abs(255 - segmented_images[i - 1]);
-		imwrite("data/segmented/lines_" + to_string(i) + ".jpg", abs(255 - output));
+		imwrite("data/segmented/lines_" + to_string(i+1) + ".jpg", abs(255 - output));
 	}
 
 }
