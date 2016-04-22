@@ -19,7 +19,6 @@ inline void padding (Mat& im, Mat&out, int window) {
 
 inline void compute_integrals (Mat& im, Mat& im_mean, Mat& im_std, int window) {
 
-
 	int window_height, window_width, window_area, m;
 	double mean, std, sum, sqsum;
 
