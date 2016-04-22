@@ -37,7 +37,7 @@ inline void compute_integrals (Mat& im, Mat& im_mean, Mat& im_std, int window) {
 			  im_sum.at<double>(i - m + window_width, 0) + im_sum.at<double>(i - m, 0);
 
 		sqsum = im_sqsum.at<double>(i - m + window_width, window_height) - im_sqsum.at<double>(i - m, window_height) -
-				im_sqsum.at<double>(i - m + window_width, 0) + im_sqsum.at<double>(i - m, 0);
+			    im_sqsum.at<double>(i - m + window_width, 0) + im_sqsum.at<double>(i - m, 0);
 
 		mean  = sum / window_area;
 		std  = sqrt((sqsum - mean * sum) / window_area);
@@ -46,7 +46,7 @@ inline void compute_integrals (Mat& im, Mat& im_mean, Mat& im_std, int window) {
 		im_std.at<double>(i, m) = std;
 
 		// Shift the window, add and remove	new/old values to the histogram
-		for	(int j = 1; j <= im.cols - window_height; j++) {
+		for (int j = 1; j <= im.cols - window_height; j++) {
 
 			// Remove the left old column and add the right new column
 			sum -= im_sum.at<double>(i - m + window_width, j) - im_sum.at<double>(i - m, j) -
@@ -87,9 +87,9 @@ inline void binarize (Mat& im, Mat& output, int window, double dr, double k) {
 
 	Mat threshold (im.rows, im.cols, CV_64F);
 
-	for	(int i = m; i <= im.rows - m - 1; i++) {
+	for (int i = m; i <= im.rows - m - 1; i++) {
 
-		for	(int j = 0; j <= im.cols - window_width; j++) {
+		for (int j = 0; j <= im.cols - window_width; j++) {
 
 			mean = im_mean.at<double>(i, j + m);
 			std = im_std.at<double>(i, j + m);
