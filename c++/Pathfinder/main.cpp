@@ -35,7 +35,7 @@ int main (int argc, char* argv[]) {
 	imwrite("data/bw.jpg", imbw);
 
 	cout << "- Detecting lines location..";
-	vector<int> lines = localize(imbw, 0.3);
+	vector<int> lines = localize(imbw);
 	cout << " ==> " << lines.size() + 1 << " lines found." << endl;
 
 

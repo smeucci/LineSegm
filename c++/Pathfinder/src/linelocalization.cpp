@@ -48,7 +48,7 @@ inline vector<int> detect_peaks (Mat& hist, double delta) {
 	return lines;
 }
 
-inline vector<int> projection_analysis (Mat& im, double delta) {
+inline vector<int> projection_analysis (Mat& im) {
 
 	im.convertTo(im, CV_64F);
 	Mat hist = Mat(im.rows, 1, CV_64F);
@@ -63,16 +63,16 @@ inline vector<int> projection_analysis (Mat& im, double delta) {
 	minMaxLoc(hist, &min, &max);
 
 	hist = hist / max;
-	delta = hist_mean / max + hist_std / max;
+	double delta = hist_mean / max + hist_std / max;
 
 	return detect_peaks (hist, delta);
 }
 
-inline vector<int> localize (Mat& input, double delta) {
+inline vector<int> localize (Mat& input) {
 
 	Mat im;
 	invert(input, im);
-	vector<int> peaks = projection_analysis(im, delta);
+	vector<int> peaks = projection_analysis(im);
 	sort(peaks.begin(), peaks.end());
 
 	vector<int> lines;
