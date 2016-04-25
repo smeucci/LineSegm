@@ -8,6 +8,7 @@
 
 #include "opencv2/opencv.hpp"
 #include <ctime>
+#include <iostream>
 #include "src/utils.cpp"
 #include "src/sauvola.cpp"
 #include "src/linelocalization.cpp"
@@ -17,7 +18,7 @@ using namespace std;
 using namespace cv;
 
 
-int main () {
+int main (int argc, char* argv[]) {
 
 	clock_t begin = clock();
 	cout << "\n########################################" << endl;
@@ -31,6 +32,7 @@ int main () {
 
 	cout << "- Thresholding.." << endl;
 	binarize(im, imbw, 20, 128, 0.3);
+	imwrite("data/bw.jpg", imbw);
 
 	cout << "- Detecting lines location..";
 	vector<int> lines = localize(imbw, 0.3);
@@ -58,9 +60,8 @@ int main () {
 		cout << " to [" << get<0>(goal) << ", " << get<1>(goal) << "]";
 
 		unordered_map<Node, Node> parents;
-		unordered_map<Node, double> gscore;
 
-		astar(map, start, goal, parents, gscore);
+		astar(map, start, goal, parents);
 
 		vector<Node> path = reconstruct_path(start, goal, parents);
 		draw_path(image_path, path);
@@ -75,7 +76,11 @@ int main () {
 	cout << "\n- Segmenting lines and saving images.." << endl;
 	line_segmentation(imbw, paths);
 
+	compute_statistics();
+
 	clock_t end = clock();
 	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 	cout << "\n## Elapsed Time: " << elapsed_secs << " s ##\n" << endl;
+
+	return 0;
 }

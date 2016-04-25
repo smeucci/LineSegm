@@ -10,6 +10,7 @@
 #include <queue>
 #include <algorithm>
 #include <unordered_map>
+#include <unordered_set>
 #include <string>
 
 using namespace cv;
@@ -174,10 +175,11 @@ inline vector<Node> reconstruct_path (Node start, Node goal, unordered_map<Node,
 
 template<typename Graph>
 inline void astar (const Graph& graph, typename Graph::Node start, typename Graph::Node goal,
-			unordered_map<typename Graph::Node, typename Graph::Node>& parents,
-			unordered_map<typename Graph::Node, double>& gscore) {
+				   unordered_map<typename Graph::Node, typename Graph::Node>& parents) {
 
 	typedef typename Graph::Node Node;
+	unordered_map<Node, double> gscore;
+	unordered_set<Node> closedSet;
 	PriorityQueue<Node> openSet;
 	openSet.put(start, 0);
 	gscore[start] = 0;
@@ -191,6 +193,11 @@ inline void astar (const Graph& graph, typename Graph::Node start, typename Grap
 		}
 
 		for (auto neighbor : graph.neighbors(current)) {
+
+			if (closedSet.count(neighbor)) {
+				continue;
+			}
+
 			double new_gscore = gscore[current] + compute_cost(graph, current, neighbor, start); //heuristic(current, neighbor);
 			if (!gscore.count(neighbor) or new_gscore < gscore[neighbor]) {
 				gscore[neighbor] = new_gscore;
