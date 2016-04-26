@@ -76,6 +76,7 @@ int main (int argc, char* argv[]) {
 	cout << "\n- Segmenting lines and saving images.." << endl;
 	line_segmentation(imbw, paths, filename);
 
+	cout << "- Computing statistics.." << endl;
 	compute_statistics(filename);
 
 	clock_t end = clock();
