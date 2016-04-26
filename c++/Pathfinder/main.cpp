@@ -25,8 +25,8 @@ int main (int argc, char* argv[]) {
 	cout << "##          LINE SEGMENTATION         ##" << endl;
 	cout << "########################################\n" << endl;
 
-	string filename = "data/test5.jpg";
-	cout << "\nReading image '" << filename << "'" << endl;;
+	string filename = argv[1];
+	cout << "Reading image '" << filename << "'" << endl;;
 	Mat im = imread(filename, 0);
 	Mat imbw (im.rows, im.cols, CV_8U);
 
@@ -74,9 +74,9 @@ int main (int argc, char* argv[]) {
 	}
 
 	cout << "\n- Segmenting lines and saving images.." << endl;
-	line_segmentation(imbw, paths);
+	line_segmentation(imbw, paths, filename);
 
-	compute_statistics();
+	compute_statistics(filename);
 
 	clock_t end = clock();
 	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
