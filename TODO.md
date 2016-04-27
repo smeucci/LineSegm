@@ -16,6 +16,10 @@ TODO LIST
 - creare groundtruth
 
 
+- calcolare hitrate, per il migliore, calcolare anche altre statistiche
+- prima di calcolare mean e std dell'histogramma rimuovere gli zeri. NO
+- aggiunto 0.015 al delta
+
 meno neighbors in get_neighbors
 
 Problemi:

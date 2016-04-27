@@ -105,6 +105,7 @@ inline void line_segmentation (Mat& input, vector<vector<Node>> paths, string fi
 
 	string folder_segmented = "data/segmented/";
 	string folder_lines = folder_segmented + filename + "/";
+	//cout << folder_lines << endl;
 
 	struct stat st = {0};
 
