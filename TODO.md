@@ -18,6 +18,7 @@ TODO LIST
 - disegnare pixel mancanti del path considerando la direzione
 - FATTO - in base al dataset, cambiare automaticamente parametri per compute_cost
 - velocizzare compute_statistics
+- fare garbage collection
 
 - calcolare hitrate, per il migliore, calcolare anche altre statistiche
 - prima di calcolare mean e std dell'histogramma rimuovere gli zeri. NO
