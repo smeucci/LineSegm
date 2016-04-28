@@ -26,7 +26,11 @@ int main (int argc, char* argv[]) {
 	cout << "########################################\n" << endl;
 
 	string filename = argv[1];
-	cout << "Reading image '" << filename << "'" << endl;;
+	cout << "Reading image '" << filename << "'" << endl;
+
+	string dataset_name = infer_dataset(filename);
+	cout << "Database " << dataset_name << endl;
+
 	Mat im = imread(filename, 0);
 	Mat imbw (im.rows, im.cols, CV_8U);
 
@@ -48,20 +52,26 @@ int main (int argc, char* argv[]) {
 	typedef Map::Node Node;
 	vector<vector<Node>> paths;
 	Mat image_path = map.grid.clone();
-	int num = 1;
 	for (vector<int>::iterator itr = lines.begin(); itr != lines.end(); itr++) {
 
 		clock_t _start = clock();
 
-		Node start{*itr, 0};
-		Node goal{*itr, map.grid.cols - 1};
+		int end;
+		if ((map.grid.cols - 1) % 2 == 0) {
+			end = map.grid.cols - 1;
+		} else {
+			end = map.grid.cols - 2;
+		}
 
-		cout << "\t" << to_string(num) + "# from [" << get<0>(start) << ", " << get<1>(start) << "]";
+		Node start{*itr, 0};
+		Node goal{*itr, end};
+
+		cout << "\t#" << to_string(distance(lines.begin(), itr) + 1) + " - from [" << get<0>(start) << ", " << get<1>(start) << "]";
 		cout << " to [" << get<0>(goal) << ", " << get<1>(goal) << "]";
 
 		unordered_map<Node, Node> parents;
 
-		astar(map, start, goal, parents);
+		astar(map, start, goal, parents, dataset_name);
 
 		vector<Node> path = reconstruct_path(start, goal, parents);
 		draw_path(image_path, path);
@@ -70,18 +80,20 @@ int main (int argc, char* argv[]) {
 		clock_t _finish = clock();
 
 		cout << " ==> path found in " + to_string(double(_finish - _start) / CLOCKS_PER_SEC) << " s" << endl;
-		num++;
 	}
 
 	cout << "\n- Segmenting lines and saving images.." << endl;
 	line_segmentation(imbw, paths, filename);
 
-	cout << "- Computing statistics.." << endl;
-	//compute_statistics(filename);
+	if (argc > 2 and strcmp(argv[2], "--stats") == 0) {
+		cout << "- Computing statistics.." << endl;
+		compute_statistics(filename);
+	}
 
 	clock_t end = clock();
 	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 	cout << "\n## Elapsed Time: " << elapsed_secs << " s ##\n" << endl;
+	cout << "########################################\n" << endl;
 
 	return 0;
 }

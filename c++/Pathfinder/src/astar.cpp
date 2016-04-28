@@ -53,10 +53,11 @@ struct Map {
 		int row, col, dr, dc;
 		tie (row, col) = node;
 		vector<Node> neighbors;
+		int st = 2;
 
 		for (auto dir : directions) {
 			tie (dr, dc) = dir;
-			Node neighbor(row + dr, col + dc);
+			Node neighbor(row + st*dr, col + st*dc);
 			if (in_bounds(neighbor)) {
 				neighbors.push_back(neighbor);
 			}
@@ -96,7 +97,7 @@ inline double heuristic (Node start, Node end) {
 	double a = pow((r1 - r2), 2);
 	double b = pow((c1 - c2), 2);
 
-	return 20*sqrt(a + b);
+	return 10*sqrt(a + b);
 }
 
 template<typename Node>
@@ -136,7 +137,7 @@ inline tuple<double, double> D (const Graph& graph, typename Graph::Node node) {
 }
 
 template<typename Graph>
-inline double compute_cost (const Graph& graph, typename Graph::Node current, typename Graph::Node neighbor, typename Graph::Node start) {
+inline double compute_cost (const Graph& graph, typename Graph::Node current, typename Graph::Node neighbor, typename Graph::Node start, string dataset) {
 	double v = V(neighbor, start);
 	double n = N(current, neighbor);
 	double m = M(graph, neighbor);
@@ -144,8 +145,11 @@ inline double compute_cost (const Graph& graph, typename Graph::Node current, ty
 	double d, d2;
 	tie (d, d2) = ds;
 
-	return 3*v + 1*n + 50*m + 150*d + 50*d2;
-	//return 2.5*v + 1*n + 50*m + 130*d + 0*d2;
+	if (strcmp(dataset.c_str(), "MLS") == 0) {
+		return 2.5*v + 1*n + 50*m + 130*d + 0*d2;
+	} else {
+		return 3*v + 1*n + 50*m + 150*d + 50*d2;
+	}
 }
 
 namespace std {
@@ -175,7 +179,7 @@ inline vector<Node> reconstruct_path (Node start, Node goal, unordered_map<Node,
 
 template<typename Graph>
 inline void astar (const Graph& graph, typename Graph::Node start, typename Graph::Node goal,
-				   unordered_map<typename Graph::Node, typename Graph::Node>& parents) {
+				   unordered_map<typename Graph::Node, typename Graph::Node>& parents, string dataset_name) {
 
 	typedef typename Graph::Node Node;
 	unordered_map<Node, double> gscore;
@@ -198,7 +202,7 @@ inline void astar (const Graph& graph, typename Graph::Node start, typename Grap
 				continue;
 			}
 
-			double new_gscore = gscore[current] + compute_cost(graph, current, neighbor, start); //heuristic(current, neighbor);
+			double new_gscore = gscore[current] + compute_cost(graph, current, neighbor, start, dataset_name); //heuristic(current, neighbor);
 			if (!gscore.count(neighbor) or new_gscore < gscore[neighbor]) {
 				gscore[neighbor] = new_gscore;
 				parents[neighbor] = current;

@@ -67,6 +67,9 @@ inline void draw_path (Mat& graph, vector<Node>& path) {
 		int row, col;
 		tie (row, col) = node;
 		graph.at<uchar>(row, col) = (uchar) 0;
+		if (col < graph.cols) {
+			graph.at<uchar>(row, col + 1) = (uchar) 0;
+		}
 	}
 	imwrite("data/map.jpg", graph*255);
 }
@@ -80,6 +83,9 @@ inline Mat segment_line (Mat& input, vector<Node> path){
 		tie(row, col) = node;
 		for (int i = row; i < input.rows; i++) {
 			output.at<uchar>(i, col) = (uchar) 255;
+			if (col < output.cols) {
+				output.at<uchar>(i, col + 1) = (uchar) 255;
+			}
 		}
 	}
 
@@ -94,6 +100,18 @@ inline bool strreplace (string& str, string& rem, string& repl) {
 	return true;
 }
 
+inline string infer_dataset (string filename) {
+	size_t mls = filename.find("MLS");
+	size_t sg = filename.find("SG");
+	if (mls != string::npos) {
+		return "MLS";
+	} else if (sg != string::npos) {
+		return "SG";
+	} else {
+		return "NULL";
+	}
+}
+
 template<typename Node>
 inline void line_segmentation (Mat& input, vector<vector<Node>> paths, string filename) {
 
@@ -105,7 +123,6 @@ inline void line_segmentation (Mat& input, vector<vector<Node>> paths, string fi
 
 	string folder_segmented = "data/segmented/";
 	string folder_lines = folder_segmented + filename + "/";
-	//cout << folder_lines << endl;
 
 	struct stat st = {0};
 
@@ -166,21 +183,16 @@ inline int count_occurences (Mat& input, int num) {
 	return count;
 }
 
-inline vector<Assignment> select_best_assignments (Mat& hitrate, Mat& line_detection_GT, Mat& line_detection_R, vector<string> lines, vector<string> groudtruth) {
+inline void select_best_assignments (vector<double>& hitrate, vector<double>& line_detection_GT, vector<double>& line_detection_R,
+									 vector<string> lines, string groudtruth) {
 
-	vector<Assignment> best_assignment;
-	double min_hit, max_hit, min_GT, max_GT, min_R, max_R;
-	Point min_loc_hit,  max_loc_hit, min_loc_GT, max_loc_GT, min_loc_R, max_loc_R;
-	for (int i = 0; i < hitrate.rows; i++) {
-		minMaxLoc(hitrate(Rect(0, i, hitrate.cols, 1)), &min_hit, &max_hit, &min_loc_hit, &max_loc_hit);
-		minMaxLoc(line_detection_GT(Rect(0, i, line_detection_GT.cols, 1)), &min_GT, &max_GT, &min_loc_GT, &max_loc_GT);
-		minMaxLoc(line_detection_R(Rect(0, i, line_detection_R.cols, 1)), &min_R, &max_R, &min_loc_R, &max_loc_R);
+	auto max = max_element(hitrate.begin(), hitrate.end());
+	int pos = distance(hitrate.begin(), max);
 
-		Assignment *best = new Assignment(lines[max_loc_hit.x], groudtruth[i], max_hit, max_GT, max_R);
-		best_assignment.push_back(*best);
-	}
-
-	return best_assignment;
+	cout << "\t## Groundtruth: " << groudtruth << " - Detected: " << lines[pos];
+	cout << " - Hit rate: " << to_string(*max);
+	cout << " - Line detection GT: " << to_string(line_detection_GT[pos]);
+	cout << " - Line detection R: " << to_string(line_detection_R[pos]) << endl;
 }
 
 inline void compute_statistics (string filename) {
@@ -198,14 +210,14 @@ inline void compute_statistics (string filename) {
 	vector<string> groundtruth = read_folder(folder_groundtruth.c_str());
 
 	Mat line, ground, united, shared;
-	Mat hitrate = Mat(groundtruth.size(), lines.size(), CV_64F);
-	Mat line_detection_GT = Mat(groundtruth.size(), lines.size(), CV_64F);;
-	Mat line_detection_R = Mat(groundtruth.size(), lines.size(), CV_64F);
-	for (unsigned int i = 0; i < lines.size(); i++) {
-		for (unsigned int j = 0; j < groundtruth.size(); j++){
+	for (unsigned int i = 0; i < groundtruth.size(); i++) {
 
-			line = imread(folder_lines + lines[i], 0) / 255;
-			ground =  imread(folder_groundtruth + groundtruth[j], 0) / 255;
+		vector<double> hitrate, line_detection_GT, line_detection_R;
+		ground =  imread(folder_groundtruth + groundtruth[i], 0) / 255;
+
+		for (unsigned int j = 0; j < lines.size(); j++){
+
+			line = imread(folder_lines + lines[j], 0) / 255;
 
 			bitwise_or(line, ground, shared);
 			bitwise_and(line, ground, united);
@@ -214,19 +226,13 @@ inline void compute_statistics (string filename) {
 			int black_pixels_ground = countNonZero(ground == 0);
 			int black_pixels_shared = countNonZero(shared == 0);
 			int black_pixels_united = countNonZero(united == 0);
-			hitrate.at<double>(j, i) = (((double) black_pixels_shared) / ((double) black_pixels_united));
-			line_detection_GT.at<double>(j, i) = (((double) black_pixels_shared) / ((double) black_pixels_ground));
-			line_detection_R.at<double>(j, i) = (((double) black_pixels_shared) / ((double) black_pixels_line));
+
+			hitrate.push_back((((double) black_pixels_shared) / ((double) black_pixels_united)));
+			line_detection_GT.push_back((((double) black_pixels_shared) / ((double) black_pixels_ground)));
+			line_detection_R.push_back((((double) black_pixels_shared) / ((double) black_pixels_line)));
 		}
-	}
 
-	vector<Assignment> best_assignment = select_best_assignments(hitrate, line_detection_GT, line_detection_R, lines, groundtruth);
-
-	for (auto best : best_assignment) {
-		cout << "## Groundtruth: " << best.get_ground() << " - Detected line: " << best.get_line() ;
-		cout << " - Pixel-Level-Hit rate: " << to_string(best.get_hitrate());
-		cout << " - Line detection GT: " << to_string(best.get_line_detection_GT());
-		cout << " - Line detection_R: " << to_string(best.get_line_detection_R());
+		select_best_assignments(hitrate, line_detection_GT, line_detection_R, lines, groundtruth[i]);
 	}
 
 }
