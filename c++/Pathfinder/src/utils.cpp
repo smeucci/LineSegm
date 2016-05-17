@@ -102,11 +102,11 @@ inline bool strreplace (string& str, string& rem, string& repl) {
 
 inline string infer_dataset (string filename) {
 	size_t mls = filename.find("MLS");
-	size_t sg = filename.find("SG");
+	size_t sg = filename.find("saintgall");
 	if (mls != string::npos) {
 		return "MLS";
 	} else if (sg != string::npos) {
-		return "SG";
+		return "saintgall";
 	} else {
 		return "NULL";
 	}
@@ -115,19 +115,23 @@ inline string infer_dataset (string filename) {
 template<typename Node>
 inline void line_segmentation (Mat& input, vector<vector<Node>> paths, string filename) {
 
-	string rem1 = "data/";
+	string dataset = infer_dataset(filename);
+
+	string rem1 = "data/" + dataset + "/images/";
 	string rem2 = ".jpg";
 	string repl = "";
 	strreplace(filename, rem1, repl);
 	strreplace(filename, rem2, repl);
 
-	string folder_segmented = "data/segmented/";
+
+	string folder_segmented = "data/" + dataset + "/detected/";
 	string folder_lines = folder_segmented + filename + "/";
 
 	struct stat st = {0};
 
 	if (stat(folder_lines.c_str(), &st) == -1) {
 	    mkdir(folder_lines.c_str(), 0755);
+	    cout << folder_lines.c_str() << endl;
 	}
 
 	vector<Mat> segmented_images;
@@ -183,33 +187,49 @@ inline int count_occurences (Mat& input, int num) {
 	return count;
 }
 
-inline void select_best_assignments (vector<double>& hitrate, vector<double>& line_detection_GT, vector<double>& line_detection_R,
+inline vector<double> select_best_assignments (vector<double>& hitrate, vector<double>& line_detection_GT, vector<double>& line_detection_R,
 									 vector<string> lines, string groudtruth) {
 
 	auto max = max_element(hitrate.begin(), hitrate.end());
 	int pos = distance(hitrate.begin(), max);
 
+	double hirate = *max;
+	double line_det_GT = line_detection_GT[pos];
+	double line_det_R = line_detection_R[pos];
+
+	vector<double> stats;
+	stats.push_back(hirate);
+	stats.push_back(line_det_GT);
+	stats.push_back(line_det_R);
+
 	cout << "\t## Groundtruth: " << groudtruth << " - Detected: " << lines[pos];
 	cout << " - Hit rate: " << to_string(*max);
-	cout << " - Line detection GT: " << to_string(line_detection_GT[pos]);
-	cout << " - Line detection R: " << to_string(line_detection_R[pos]) << endl;
+	cout << " - Line detection GT: " << to_string(line_det_GT);
+	cout << " - Line detection R: " << to_string(line_det_R) << endl;
+
+	return stats;
+
 }
 
 inline void compute_statistics (string filename) {
 
-	string rem1 = "data/";
+	string dataset = infer_dataset(filename);
+
+	string rem1 = "data/" + dataset + "/images/";
 	string rem2 = ".jpg";
 	string repl = "";
 	strreplace(filename, rem1, repl);
 	strreplace(filename, rem2, repl);
 
-	string folder_lines = "data/segmented/" + filename + "/";
-	string folder_groundtruth = "data/groundtruth/" + filename + "/";
+	string folder_lines = "data/" + dataset + "/detected/" + filename + "/";
+	string folder_groundtruth = "data/" + dataset + "/groundtruth/" + filename + "/";
 
 	vector<string> lines = read_folder(folder_lines.c_str());
 	vector<string> groundtruth = read_folder(folder_groundtruth.c_str());
 
 	Mat line, ground, united, shared;
+
+	double tot_hitrate, tot_line_detection_GT, tot_line_detection_R = 0;
 	for (unsigned int i = 0; i < groundtruth.size(); i++) {
 
 		vector<double> hitrate, line_detection_GT, line_detection_R;
@@ -232,7 +252,16 @@ inline void compute_statistics (string filename) {
 			line_detection_R.push_back((((double) black_pixels_shared) / ((double) black_pixels_line)));
 		}
 
-		select_best_assignments(hitrate, line_detection_GT, line_detection_R, lines, groundtruth[i]);
+		vector<double> stats = select_best_assignments(hitrate, line_detection_GT, line_detection_R, lines, groundtruth[i]);
+		tot_hitrate = tot_hitrate + stats[0];
+		tot_line_detection_GT = tot_line_detection_GT + stats[1];
+		tot_line_detection_R = tot_line_detection_R + stats[2];
+
 	}
+
+	cout << "\n\t## Average stats ==> ";
+	cout << " - Hit rate: " << to_string(tot_hitrate / groundtruth.size());
+	cout << " - Line detection GT: " << to_string(tot_line_detection_GT / groundtruth.size());
+	cout << " - Line detection R: " << to_string(tot_line_detection_R / groundtruth.size()) << endl;
 
 }

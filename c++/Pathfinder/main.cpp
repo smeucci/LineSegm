@@ -35,8 +35,8 @@ int main (int argc, char* argv[]) {
 	Mat imbw (im.rows, im.cols, CV_8U);
 
 	cout << "- Thresholding.." << endl;
-	binarize(im, imbw, 20, 128, 0.3);
-	imwrite("data/bw.jpg", imbw);
+	binarize(im, imbw, 20, 128, 0.4);
+    //imwrite("data/bw.jpg", imbw);
 
 	cout << "- Detecting lines location..";
 	vector<int> lines = localize(imbw);
@@ -85,7 +85,7 @@ int main (int argc, char* argv[]) {
 	cout << "\n- Segmenting lines and saving images.." << endl;
 	line_segmentation(imbw, paths, filename);
 
-	if (argc > 2 and strcmp(argv[2], "--stats") == 0) {
+	if (strcmp(argv[argc - 1], "--stats") == 0) {
 		cout << "- Computing statistics.." << endl;
 		compute_statistics(filename);
 	}

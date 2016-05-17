@@ -64,8 +64,8 @@ inline vector<int> projection_analysis (Mat& im) {
 
 	hist = hist / max;
 	double delta = hist_mean / max + hist_std / max;
-
-	return detect_peaks (hist, delta + 0.015); //to compensate error in peak detection for some cases
+	// double epsilon = 0.015; //to compensate error in peak detection for some cases
+	return detect_peaks (hist, delta);
 }
 
 inline vector<int> localize (Mat& input) {
