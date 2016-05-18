@@ -11,6 +11,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <iostream>
+#include <fstream>
 
 using namespace cv;
 using namespace std;
@@ -131,6 +133,7 @@ inline void line_segmentation (Mat& input, vector<vector<Node>> paths, string fi
 
 	if (stat(folder_lines.c_str(), &st) == -1) {
 	    mkdir(folder_lines.c_str(), 0755);
+	    cout << "- Created folder ";
 	    cout << folder_lines.c_str() << endl;
 	}
 
@@ -263,5 +266,18 @@ inline void compute_statistics (string filename) {
 	cout << " - Hit rate: " << to_string(tot_hitrate / groundtruth.size());
 	cout << " - Line detection GT: " << to_string(tot_line_detection_GT / groundtruth.size());
 	cout << " - Line detection R: " << to_string(tot_line_detection_R / groundtruth.size()) << endl;
+
+	ofstream csvfile;
+	csvfile.open("data/" + dataset + "/stats.csv", std::ios_base::app);
+	csvfile << filename;
+	csvfile << ",";
+	csvfile << int(round((tot_hitrate / groundtruth.size()) * 100));
+	csvfile << ",";
+	csvfile << int(round((tot_line_detection_GT / groundtruth.size()) * 100));
+	csvfile << ",";
+	csvfile << int(round((tot_line_detection_R / groundtruth.size()) * 100));
+	csvfile << "\n";
+
+	csvfile.close();
 
 }
