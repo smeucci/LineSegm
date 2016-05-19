@@ -47,7 +47,10 @@ int main (int argc, char* argv[]) {
 
 		cout << "- Thresholding.." << endl;
 		binarize(im, imbw, 20, 128, 0.4);
-		//imwrite("data/bw.jpg", imbw);
+		Mat bw = imbw.clone();
+		Mat element = getStructuringElement( MORPH_RECT, Size(7, 7), Point(3, 3));
+		morphologyEx(imbw, imbw, 2, element );
+		imwrite("data/bw.jpg", bw);
 
 		cout << "- Detecting lines location..";
 		vector<int> lines = localize(imbw);
@@ -94,7 +97,7 @@ int main (int argc, char* argv[]) {
 		}
 
 		cout << "\n- Segmenting lines and saving images.." << endl;
-		line_segmentation(imbw, paths, filename);
+		line_segmentation(bw, paths, filename);
 
 		if (strcmp(argv[argc - 1], "--stats") == 0) {
 			cout << "- Computing statistics.." << endl;

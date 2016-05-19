@@ -20,11 +20,13 @@ inline void invert (Mat& im, Mat& output) {
 }
 
 inline void enhance (Mat& im, Mat& output) {
-	Mat element = getStructuringElement( MORPH_RECT, Size(5, 5), Point(2, 2));
+	/*Mat element = getStructuringElement( MORPH_RECT, Size(5, 5), Point(2, 2));
 	erode(im, output, element);
 
 	element = getStructuringElement( MORPH_RECT, Size(15, 15), Point(7, 7));
-	dilate(output, output, element);
+	dilate(output, output, element);*/
+	Mat element = getStructuringElement( MORPH_RECT, Size(7, 7), Point(3, 3));
+	morphologyEx(im, output, 2, element);
 }
 
 inline vector<int> detect_peaks (Mat& hist, double delta) {
@@ -63,7 +65,7 @@ inline vector<int> projection_analysis (Mat& im) {
 	minMaxLoc(hist, &min, &max);
 
 	hist = hist / max;
-	double delta = hist_mean / max + hist_std / max;
+	double delta = hist_mean / max + 0.6*(hist_std / max);
 	// double epsilon = 0.015; //to compensate error in peak detection for some cases
 	return detect_peaks (hist, delta);
 }
@@ -71,7 +73,8 @@ inline vector<int> projection_analysis (Mat& im) {
 inline vector<int> localize (Mat& input) {
 
 	Mat im;
-	invert(input, im);
+	enhance(input, im);
+	invert(im, im);
 	vector<int> peaks = projection_analysis(im);
 	sort(peaks.begin(), peaks.end());
 
