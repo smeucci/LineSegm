@@ -48,7 +48,7 @@ int main (int argc, char* argv[]) {
 		cout << "- Thresholding.." << endl;
 		binarize(im, imbw, 20, 128, 0.4);
 		Mat bw = imbw.clone();
-		Mat element = getStructuringElement( MORPH_RECT, Size(7, 7), Point(3, 3));
+		Mat element = getStructuringElement( MORPH_RECT, Size(5, 5), Point(2, 2));
 		morphologyEx(imbw, imbw, 2, element );
 		imwrite("data/bw.jpg", bw);
 

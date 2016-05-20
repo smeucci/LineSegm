@@ -97,7 +97,7 @@ inline double heuristic (Node start, Node end) {
 	double a = pow((r1 - r2), 2);
 	double b = pow((c1 - c2), 2);
 
-	return 10*sqrt(a + b);
+	return 5*sqrt(a + b);
 }
 
 template<typename Node>
