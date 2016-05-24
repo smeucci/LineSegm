@@ -1,0 +1,20 @@
+ELABORATO TDBD
+
+- INTRODUZIONE
+Parlare dei progressi nel riconoscimento automatico di testo scritto a mano. Importante perchè tante informazioni non sono digitalizzate. Uno dei primi passi è trovare e segmentare le linee di un testo manoscritto, in modo poi da sottoporre le singole linee ad un ulteriore processing dove verranno trovate le parole e digitalizzate ecc. Questo elaborato prevede l'utilizzo di una tecnica per la segmentazione di testo manoscritto sfruttando le capacità dell'a star, un algoritmo di pathfinding. Le fasi per processare una pagina di un testo manoscritto sono tre: binarizzazione, localizzazione delle linee all'interno della pagina ed infine esecuzione dell'algoritmo di pathfinding.
+
+- SAUVOLA
+La prima fase prevede di binarizzare l'immagine che rappresenta la pagina di testo manoscritto. I testi dei dataset usati contengono immagini, inchiostro che si vede dalla pagina sotto ecc, e quindi le normali tecniche di binarizzazione non funzionano al meglio. In particolare, una delle tecniche più usate, otsu, lascia tracce dell'inchiosto che si vede dalla pagina sotto. Per questo motivo è stata implementata la tecnica di sauvola per la binarizzazione. Una finestra, in genere 20x20, viene fatta scorrere lungo l'immagine, con step 1. Per ciascuna finestra viene calcolata la media e la deviazione standard. Otterrò così due matrici di dimensioni pari all'immagine originale, i cui valori sono la media e la std dei pixel che erano centrati nella finestra. Grazie a questi valori, posso sogliare dinamicamente e in maniera indipendente l'immagine originale, tenendo così conto delle differenza fra le varie zone, anche piccole, dell'immagini. Mostrare risultati comparativi fra otsu e sauvola. Parlare dei dettagli implementativi: usato c++, immagini integrali, formula per la sogliatura, soglia usata.
+
+- LINE LOCALIZATION
+La seconda fase riguarda la localizzazione delle line di testo all'interno della pagina (immagine). In particolare quello che interessa è la posizione sull'asse delle ordinate della linea di testo. Per fare ciò si usa la projection profile analysis. Prendo la mia immagine, inverto l'immagine, metto i valori che prima erano 0 o 255, a 0 o 1, sommo le righe della matrice corrispondente orizzontalmente, ottengo così un istogramma verticale che mi indica dove sono concentrati i pixel neri. A questo punto si tratta di utilizzare tecniche di peak detection per rilevari i picchi dell'istogramma, scegliendo una soglia opportuna (alcune line sono lunghe, valori istogramma alto, altre corte, valori istogramma più basso). Una volta trovati i picchi, questi mi rappresentano la coordinata y dell'inizio della linea di testo. Tuttavia, siccome la segmentazione delle linee viene fatta nello spazio bianco fra di linee di testo, quello che ci interressa sono i punti fra due picchi, che rappresentano una valle, ovvero uno spazio bianco fra due linee di testo. Dettaglia implementativi: c++, apertura per rendere più corpose le linee, uso della libreria persistance1D.hpp per peak detection, scelta della soglia.
+
+- ASTAR
+
+- DATASET
+
+- CREAZIONE GROUNDTRUTH
+
+- ESPERIMENTI
+
+- CONCLUSIONE

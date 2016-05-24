@@ -178,7 +178,7 @@ inline vector<Node> reconstruct_path (Node start, Node goal, unordered_map<Node,
 }
 
 template<typename Graph>
-inline void astar (const Graph& graph, typename Graph::Node start, typename Graph::Node goal,
+inline void astar_search (const Graph& graph, typename Graph::Node start, typename Graph::Node goal,
 				   unordered_map<typename Graph::Node, typename Graph::Node>& parents, string dataset_name) {
 
 	typedef typename Graph::Node Node;

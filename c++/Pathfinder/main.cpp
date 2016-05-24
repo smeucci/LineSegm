@@ -50,12 +50,16 @@ int main (int argc, char* argv[]) {
 		Mat bw = imbw.clone();
 		Mat element = getStructuringElement( MORPH_RECT, Size(5, 5), Point(2, 2));
 		morphologyEx(imbw, imbw, 2, element );
-		imwrite("data/bw.jpg", bw);
+		//imwrite("data/bw.jpg", bw);
+		imwrite(filename, bw);
+
+		if (true) {
+			continue;
+		}
 
 		cout << "- Detecting lines location..";
 		vector<int> lines = localize(imbw);
 		cout << " ==> " << lines.size() + 1 << " lines found." << endl;
-
 
 		cout << "- A* path planning algorithm.." << endl;
 		Map map;
@@ -85,7 +89,7 @@ int main (int argc, char* argv[]) {
 
 			unordered_map<Node, Node> parents;
 
-			astar(map, start, goal, parents, dataset_name);
+			astar_search(map, start, goal, parents, dataset_name);
 
 			vector<Node> path = reconstruct_path(start, goal, parents);
 			draw_path(image_path, path);
