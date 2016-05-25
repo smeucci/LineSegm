@@ -50,12 +50,7 @@ int main (int argc, char* argv[]) {
 		Mat bw = imbw.clone();
 		Mat element = getStructuringElement( MORPH_RECT, Size(5, 5), Point(2, 2));
 		morphologyEx(imbw, imbw, 2, element );
-		//imwrite("data/bw.jpg", bw);
-		imwrite(filename, bw);
-
-		if (true) {
-			continue;
-		}
+		imwrite("data/bw.jpg", bw);
 
 		cout << "- Detecting lines location..";
 		vector<int> lines = localize(imbw);
