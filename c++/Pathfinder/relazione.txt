@@ -1,5 +1,15 @@
 ELABORATO TDBD
 
+
+- IMMAGINI:
+    - esempio per i due dataset
+    - confronto normale, otsu, sauvola
+    - immagine istogramma proiezione line localization, messo sopra immagine binarizzata da cui è estratto
+    - esempio di path per entrambi i dataset, due immagini tot
+    - esempio di grountruth e corrispondente linea segmentata
+    - tabella statistiche, magari istogramma
+
+
 - INTRODUZIONE
 Parlare dei progressi nel riconoscimento automatico di testo scritto a mano. Importante perchè tante informazioni non sono digitalizzate. Uno dei primi passi è trovare e segmentare le linee di un testo manoscritto, in modo poi da sottoporre le singole linee ad un ulteriore processing dove verranno trovate le parole e digitalizzate ecc. Questo elaborato prevede l'utilizzo di una tecnica per la segmentazione di testo manoscritto sfruttando le capacità dell'a star, un algoritmo di pathfinding. Le fasi per processare una pagina di un testo manoscritto sono tre: binarizzazione, localizzazione delle linee all'interno della pagina ed infine esecuzione dell'algoritmo di pathfinding.
 

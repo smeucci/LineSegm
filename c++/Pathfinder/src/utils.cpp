@@ -18,37 +18,6 @@ using namespace cv;
 using namespace std;
 
 
-class Assignment {
-
-	private:
-		string line;
-		string ground;
-		double hitrate;
-		double line_detection_GT;
-		double line_detection_R;
-
-	public:
-		Assignment (string line, string ground, float hitrate, float line_detection_GT, float line_detection_R) {
-			this->line = line;
-			this->ground = ground;
-			this->hitrate = hitrate;
-			this->line_detection_GT = line_detection_GT;
-			this->line_detection_R = line_detection_R;
-		}
-
-		~Assignment () {};
-
-		string get_line () {return this->line; }
-		string get_ground () {return this->ground; }
-		double get_hitrate () {return this->hitrate; }
-		double get_line_detection_GT () {return this->line_detection_GT; }
-		double get_line_detection_R () {return this->line_detection_R; }
-
-
-
-};
-
-
 inline Mat distance_transform (Mat input) {
 
 	Mat dmat = input.clone();
@@ -196,12 +165,12 @@ inline vector<double> select_best_assignments (vector<double>& hitrate, vector<d
 	auto max = max_element(hitrate.begin(), hitrate.end());
 	int pos = distance(hitrate.begin(), max);
 
-	double hirate = *max;
+	double hit_rate = *max;
 	double line_det_GT = line_detection_GT[pos];
 	double line_det_R = line_detection_R[pos];
 
 	vector<double> stats;
-	stats.push_back(hirate);
+	stats.push_back(hit_rate);
 	stats.push_back(line_det_GT);
 	stats.push_back(line_det_R);
 
@@ -232,6 +201,7 @@ inline void compute_statistics (string filename) {
 
 	Mat line, ground, united, shared;
 
+	int tot_correctly_detected = 0;
 	double tot_hitrate, tot_line_detection_GT, tot_line_detection_R = 0;
 	for (unsigned int i = 0; i < groundtruth.size(); i++) {
 
@@ -260,12 +230,17 @@ inline void compute_statistics (string filename) {
 		tot_line_detection_GT = tot_line_detection_GT + stats[1];
 		tot_line_detection_R = tot_line_detection_R + stats[2];
 
+		if (stats[1] > 0.9 && stats[2] > 0.9) {
+			tot_correctly_detected++;
+		}
+
 	}
 
-	cout << "\n\t## Average stats ==> ";
-	cout << " - Hit rate: " << to_string(tot_hitrate / groundtruth.size());
+	cout << "\n\t## Avg. stats ==> ";
+	cout << " Hit rate: " << to_string(tot_hitrate / groundtruth.size());
 	cout << " - Line detection GT: " << to_string(tot_line_detection_GT / groundtruth.size());
-	cout << " - Line detection R: " << to_string(tot_line_detection_R / groundtruth.size()) << endl;
+	cout << " - Line detection R: " << to_string(tot_line_detection_R / groundtruth.size());
+	cout << " - Correctly detected: " << to_string(tot_correctly_detected) << "/" << to_string(groundtruth.size()) << endl;
 
 	ofstream csvfile;
 	csvfile.open("data/" + dataset + "/stats.csv", std::ios_base::app);
@@ -276,6 +251,10 @@ inline void compute_statistics (string filename) {
 	csvfile << int(round((tot_line_detection_GT / groundtruth.size()) * 100));
 	csvfile << ",";
 	csvfile << int(round((tot_line_detection_R / groundtruth.size()) * 100));
+	csvfile << ",";
+	csvfile << tot_correctly_detected;
+	csvfile << ",";
+	csvfile << groundtruth.size();
 	csvfile << "\n";
 
 	csvfile.close();
