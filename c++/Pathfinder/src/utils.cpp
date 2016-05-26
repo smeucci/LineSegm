@@ -230,7 +230,7 @@ inline void compute_statistics (string filename) {
 		tot_line_detection_GT = tot_line_detection_GT + stats[1];
 		tot_line_detection_R = tot_line_detection_R + stats[2];
 
-		if (stats[1] > 0.9 && stats[2] > 0.9) {
+		if (stats[1] >= 0.9 && stats[2] >= 0.9) {
 			tot_correctly_detected++;
 		}
 
