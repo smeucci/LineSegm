@@ -59,7 +59,7 @@ inline void compute_integrals (Mat& im, Mat& im_mean, Mat& im_std, int window) {
 					 im_sqsum.at<double>(i - m + window_width, j + window_height - 1) + im_sqsum.at<double>(i - m, j + window_height - 1);
 
 			mean  = sum / window_area;
-			std  = sqrt((sqsum - mean * sum)/window_area);
+			std  = sqrt((sqsum - mean * sum) / window_area);
 
 			im_mean.at<double>(i, j + m) = mean;
 			im_std.at<double>(i, j + m) = std;
