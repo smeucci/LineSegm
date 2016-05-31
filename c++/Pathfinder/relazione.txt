@@ -1,5 +1,30 @@
 ELABORATO TDBD
 
+errori
+55, 50, 20, 14
+
+
+results:
+
+- heu 5 step 2 sg: 94.08 98.85 95.2 1339 1431
+- heu 10 step 2 sg: 94.10 98.30 96.9 1339 1431
+- heu 10 step 1 sg: 94.13 98.9 95.03 1340 1431 4646
+- heu 20 step 1 sg: 94.13 98.9 95.03 1340 1431 2352
+
+- heu 5 step 2 mls: 85.2 93.4 90 144 200
+- heu 10 step 2 mls: 85.3 93.4 90 144 200
+- heu 20 step 1 mls: 85.4 93.5 90 144 200 2474
+
+esperimenti:
+
+- 5, 2, open
+- 5, 2, close
+- 10, 2, open
+- 10, 2, close
+- 10, 1, open
+- 10, 1, close
+- 20, 1, open
+- 20, 1, close
 
 - IMMAGINI:
     - esempio per i due dataset

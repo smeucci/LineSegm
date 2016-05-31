@@ -72,10 +72,10 @@ inline bool strreplace (string& str, string& rem, string& repl) {
 }
 
 inline string infer_dataset (string filename) {
-	size_t mls = filename.find("MLS");
+	size_t mls = filename.find("mls");
 	size_t sg = filename.find("saintgall");
 	if (mls != string::npos) {
-		return "MLS";
+		return "mls";
 	} else if (sg != string::npos) {
 		return "saintgall";
 	} else {
