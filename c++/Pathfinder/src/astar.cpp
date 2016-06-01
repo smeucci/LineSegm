@@ -49,15 +49,14 @@ struct Map {
 		}
 	}
 
-	vector<Node> neighbors(Node node) const {
+	vector<Node> neighbors(Node node, int step) const {
 		int row, col, dr, dc;
 		tie (row, col) = node;
 		vector<Node> neighbors;
-		int st = 1;
 
 		for (auto dir : directions) {
 			tie (dr, dc) = dir;
-			Node neighbor(row + st*dr, col + st*dc);
+			Node neighbor(row + step*dr, col + step*dc);
 			if (in_bounds(neighbor)) {
 				neighbors.push_back(neighbor);
 			}
@@ -90,14 +89,14 @@ struct PriorityQueue {
 };
 
 template<typename Node>
-inline double heuristic (Node start, Node end) {
+inline double heuristic (Node start, Node end, int mfactor) {
 	int r1, r2, c1, c2;
 	tie (r1, c1) = start;
 	tie (r2, c2) = end;
 	double a = pow((r1 - r2), 2);
 	double b = pow((c1 - c2), 2);
 
-	return 10*sqrt(a + b);
+	return mfactor*sqrt(a + b);
 }
 
 template<typename Node>
@@ -179,7 +178,7 @@ inline vector<Node> reconstruct_path (Node start, Node goal, unordered_map<Node,
 
 template<typename Graph>
 inline void astar_search (const Graph& graph, typename Graph::Node start, typename Graph::Node goal,
-				   unordered_map<typename Graph::Node, typename Graph::Node>& parents, string dataset_name) {
+				   unordered_map<typename Graph::Node, typename Graph::Node>& parents, string dataset_name, int step, int mfactor) {
 
 	typedef typename Graph::Node Node;
 	unordered_map<Node, double> gscore;
@@ -196,7 +195,7 @@ inline void astar_search (const Graph& graph, typename Graph::Node start, typena
 			break;
 		}
 
-		for (auto neighbor : graph.neighbors(current)) {
+		for (auto neighbor : graph.neighbors(current, step)) {
 
 			if (closedSet.count(neighbor)) {
 				continue;
@@ -206,7 +205,7 @@ inline void astar_search (const Graph& graph, typename Graph::Node start, typena
 			if (!gscore.count(neighbor) or new_gscore < gscore[neighbor]) {
 				gscore[neighbor] = new_gscore;
 				parents[neighbor] = current;
-				double fscore = new_gscore + heuristic(neighbor, goal);
+				double fscore = new_gscore + heuristic(neighbor, goal, mfactor);
 				openSet.put(neighbor, fscore);
 			}
 		}

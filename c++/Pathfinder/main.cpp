@@ -25,10 +25,34 @@ int main (int argc, char* argv[]) {
 	cout << "##          LINE SEGMENTATION         ##" << endl;
 	cout << "########################################" << endl;
 
+
 	vector<string> filenames;
 	for (int i = 1; i < argc; i++) {
-		if (not strcmp(argv[i], "--stats") == 0) {
+		if (strcmp(argv[i], "--stats") == 0 or strcmp(argv[i], "-s") == 0 or strcmp(argv[i], "-mf") == 0) {
+			break;
+		} else {
 			filenames.push_back(argv[i]);
+		}
+	}
+
+	// parameters parsing
+	bool flag_stats = false;
+	int step = 2;
+	int mfactor = 5;
+
+	for (int i = 1; i < argc; i++) {
+		if (!strcmp(argv[i], "--stats")) {
+			flag_stats = true;
+		}
+
+		if (!strcmp(argv[i], "-s")) {
+			step = atoi(argv[i + 1]);
+			if (step > 2) step = 2;
+			else if (step < 1) step = 1;
+		}
+
+		if (!strcmp(argv[i], "-mf")) {
+			mfactor = atoi(argv[i + 1]);
 		}
 	}
 
@@ -61,7 +85,6 @@ int main (int argc, char* argv[]) {
 		map.grid = imbw / 255;
 		map.dmat = distance_transform(map.grid);
 
-
 		typedef Map::Node Node;
 		vector<vector<Node>> paths;
 		Mat image_path = map.grid.clone();
@@ -84,7 +107,7 @@ int main (int argc, char* argv[]) {
 
 			unordered_map<Node, Node> parents;
 
-			astar_search(map, start, goal, parents, dataset_name);
+			astar_search(map, start, goal, parents, dataset_name, step, mfactor);
 
 			vector<Node> path = reconstruct_path(start, goal, parents);
 			draw_path(image_path, path);
@@ -98,10 +121,13 @@ int main (int argc, char* argv[]) {
 		cout << "\n- Segmenting lines and saving images.." << endl;
 		line_segmentation(bw, paths, filename);
 
-		if (strcmp(argv[argc - 1], "--stats") == 0) {
+
+		if (flag_stats) {
 			cout << "- Computing statistics.." << endl;
 			compute_statistics(filename);
 		}
+
+
 
 		clock_t end_for = clock();
 		double elapsed_secs = double(end_for - begin_for) / CLOCKS_PER_SEC;
