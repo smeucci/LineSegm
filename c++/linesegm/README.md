@@ -1,6 +1,4 @@
-##########################
-##  COMPILE INSTRUCTION ##
-##########################
+#  COMPILE INSTRUCTION
 
 Opencv 3.0 libraries used:
     - opencv_core
@@ -13,4 +11,4 @@ Symbols used:
     - __cplusplus=201103L
     
 Flags used:
-    "-c -fmessage-length=0 -std=c++11"
+    - "-c -fmessage-length=0 -std=c++11"
