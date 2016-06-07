@@ -18,6 +18,29 @@ using namespace cv;
 using namespace std;
 
 
+inline void print_help () {
+
+	fprintf(stderr,
+	            "Usage: Pathfinder [FILES]... [OPTIONS]...\n"
+	            "Line segmentation for handwritten documents.\n"
+	            "\n"
+	            "Options:\n"
+	            "\t-s integer \t\tStep option.\n"
+	            "             \t\tChange the step with which explore the map.\n"
+	            "\t-mf integer   \t\tMultiplication factor.\n"
+	            "             \t\tIncrease the multiplication factor to obtain a non-admissible heuristic.\n"
+	            "\t--stats	\t\tCompute and show statistics about the line segmentation.\n"
+	            "\t--help       \t\tShow this help information.\n"
+	            "\n"
+	            "e.g.\n"
+	            "\tPathfinder image.jpg -s 2 -mf 5 --stats\n"
+	            "\tPathfinder images/* -s 1 -mf 20 --stats\n");
+
+	    exit(0);
+
+}
+
+
 inline Mat distance_transform (Mat input) {
 
 	Mat dmat = input.clone();

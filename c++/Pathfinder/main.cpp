@@ -21,10 +21,6 @@ using namespace cv;
 int main (int argc, char* argv[]) {
 
 	clock_t begin = clock();
-	cout << "\n########################################" << endl;
-	cout << "##          LINE SEGMENTATION         ##" << endl;
-	cout << "########################################" << endl;
-
 
 	vector<string> filenames;
 	for (int i = 1; i < argc; i++) {
@@ -41,6 +37,11 @@ int main (int argc, char* argv[]) {
 	int mfactor = 5;
 
 	for (int i = 1; i < argc; i++) {
+
+		if (!strcmp(argv[i], "--help")) {
+			print_help();
+		}
+
 		if (!strcmp(argv[i], "--stats")) {
 			flag_stats = true;
 		}
@@ -55,6 +56,10 @@ int main (int argc, char* argv[]) {
 			mfactor = atoi(argv[i + 1]);
 		}
 	}
+
+	cout << "\n########################################" << endl;
+	cout << "##          LINE SEGMENTATION         ##" << endl;
+	cout << "########################################" << endl;
 
 	for (string filename : filenames) {
 
