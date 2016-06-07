@@ -1,4 +1,4 @@
-COMPILE INSTRUCTION
+COMPILE INSTRUCTIONS
 ===================
 
 Opencv 3.0 libraries used:
