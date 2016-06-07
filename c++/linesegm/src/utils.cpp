@@ -32,9 +32,10 @@ inline void print_help () {
 	            "\t--stats	\t\tCompute and show statistics about the line segmentation.\n"
 	            "\t--help       \t\tShow this help information.\n"
 	            "\n"
-	            "e.g.\n"
+	            "Examples:\n"
 	            "\tlinesegm image.jpg -s 2 -mf 5 --stats\n"
-	            "\tlinesegm images/* -s 1 -mf 20 --stats\n");
+	            "\tlinesegm images/* -s 1 -mf 20 --stats\n"
+			    "\tlinesegm data/saintgall/images/csg562-003.jpg --stats\n");
 
 	    exit(0);
 

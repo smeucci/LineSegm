@@ -20,11 +20,6 @@ inline void invert (Mat& im, Mat& output) {
 }
 
 inline void enhance (Mat& im, Mat& output) {
-	/*Mat element = getStructuringElement( MORPH_RECT, Size(5, 5), Point(2, 2));
-	erode(im, output, element);
-
-	element = getStructuringElement( MORPH_RECT, Size(15, 15), Point(7, 7));
-	dilate(output, output, element);*/
 	Mat element = getStructuringElement( MORPH_RECT, Size(7, 7), Point(3, 3));
 	morphologyEx(im, output, 2, element);
 }
