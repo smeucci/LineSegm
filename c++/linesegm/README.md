@@ -9,7 +9,7 @@ Opencv 3.0 libraries used:
     
 Symbols used:
 - __GXX_EXPERIMENTAL_CXX0X (double '_' also at the ending)
-- __cplusplus=201103L"
+- __cplusplus=201103L
     
 Flags used:
 - "-c -fmessage-length=0 -std=c++11"
