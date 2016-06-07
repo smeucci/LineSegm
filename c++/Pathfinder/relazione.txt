@@ -1,5 +1,15 @@
 ELABORATO TDBD
 
+
+<listOptionValue builtIn="false" value="__GXX_EXPERIMENTAL_CXX0X__"/>
+<listOptionValue builtIn="false" value="__cplusplus=201103L"/>
+
+
+<listOptionValue builtIn="false" value="opencv_imgproc"/>
+<listOptionValue builtIn="false" value="opencv_core"/>
+<listOptionValue builtIn="false" value="opencv_highgui"/>
+<listOptionValue builtIn="false" value="opencv_imgcodecs"/>
+
 errori
 55, 50, 20, 14
 
