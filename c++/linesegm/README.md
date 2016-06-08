@@ -9,8 +9,7 @@ To build the project compile go to the root folder of the project and run
 
 # Example
 A simple example of how to use linesegm:
-```bash
--- Usage example
+```
 ./linesegm data/saintgall/csg562-003.jpg -s 2 -mf 5 --stats
 ```
 
