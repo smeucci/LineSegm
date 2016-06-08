@@ -1,15 +1,20 @@
-COMPILE INSTRUCTIONS
+LINESEGM
 ===================
 
-Opencv 3.0 libraries used:
-- opencv_core
-- opencv_highgui
-- opencv_imgcodecs
-- opencv_imgproc
-    
-Symbols used:
-- __GXX_EXPERIMENTAL_CXX0X (double '_' also at the ending)
-- __cplusplus=201103L
-    
-Flags used:
-- "-c -fmessage-length=0 -std=c++11"
+## Build
+To build the project compile go to the root folder of the project and run
+```
+./makefile.sh
+````
+
+# Example
+A simple example of how to use linesegm:
+```bash
+-- Usage example
+./linesegm data/saintgall/csg562-003.jpg -s 2 -mf 5 --stats
+```
+
+To understand how to use the tool, run the help command
+```
+./linesegm --help
+````
