@@ -21,7 +21,7 @@ using namespace std;
 inline void print_help () {
 
 	fprintf(stderr,
-	            "Usage: linesegm [FILES]... [OPTIONS]...\n"
+	            "Usage: ./linesegm [FILES]... [OPTIONS]...\n"
 	            "Line segmentation for handwritten documents.\n"
 	            "\n"
 	            "Options:\n"
@@ -33,9 +33,9 @@ inline void print_help () {
 	            "\t--help       \t\tShow this help information.\n"
 	            "\n"
 	            "Examples:\n"
-	            "\tlinesegm image.jpg -s 2 -mf 5 --stats\n"
-	            "\tlinesegm images/* -s 1 -mf 20 --stats\n"
-			    "\tlinesegm data/saintgall/images/csg562-003.jpg --stats\n");
+	            "\t./linesegm image.jpg -s 2 -mf 5 --stats\n"
+	            "\t./linesegm images/* -s 1 -mf 20 --stats\n"
+			    "\t./linesegm data/saintgall/images/csg562-003.jpg --stats\n");
 
 	    exit(0);
 
