@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Create the build folder
+
+mkdir -p build
+
+# Set flags and libs used
 
 FLAGS="-D__GXX_EXPERIMENTAL_CXX0X__ -D__cplusplus=201103L"
 LIBS="-lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs"
