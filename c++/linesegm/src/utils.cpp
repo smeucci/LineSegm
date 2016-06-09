@@ -21,21 +21,21 @@ using namespace std;
 inline void print_help () {
 
 	fprintf(stderr,
-	            "Usage: ./linesegm [FILES]... [OPTIONS]...\n"
+	            "Usage: bin/linesegm [FILES]... [OPTIONS]...\n"
 	            "Line segmentation for handwritten documents.\n"
 	            "\n"
 	            "Options:\n"
-	            "\t-s integer \t\tStep option.\n"
+	            "\t-s integer \t\tStep value (1 or 2).\n"
 	            "             \t\t\tChange the step with which explore the map.\n"
-	            "\t-mf integer   \t\tMultiplication factor.\n"
+	            "\t-mf integer   \t\tMultiplication factor (must be a positive interger).\n"
 	            "             \t\t\tIncrease the multiplication factor to obtain a non-admissible heuristic.\n"
 	            "\t--stats	\t\tCompute and show statistics about the line segmentation.\n"
 	            "\t--help       \t\tShow this help information.\n"
 	            "\n"
 	            "Examples:\n"
-	            "\t./linesegm image.jpg -s 2 -mf 5 --stats\n"
-	            "\t./linesegm images/* -s 1 -mf 20 --stats\n"
-			    "\t./linesegm data/saintgall/images/csg562-003.jpg --stats\n");
+	            "\tbin/linesegm image.jpg -s 2 -mf 5 --stats\n"
+	            "\tbin/linesegm images/* -s 1 -mf 20 --stats\n"
+			    "\tbin/linesegm data/saintgall/images/csg562-003.jpg --stats\n");
 
 	    exit(0);
 

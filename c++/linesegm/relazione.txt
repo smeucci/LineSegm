@@ -1,6 +1,14 @@
 ELABORATO TDBD
 
 
+- aggiungere colonna time a tabelle
+- aggiungere tabella autori
+- commentare esperimenti
+- confrontare risultati
+- immagine con path zommata
+- immagine con confronto detected groundtruth, corretto e sbagliato, didascalia con misure
+
+
 <listOptionValue builtIn="false" value="__GXX_EXPERIMENTAL_CXX0X__"/>
 <listOptionValue builtIn="false" value="__cplusplus=201103L"/>
 

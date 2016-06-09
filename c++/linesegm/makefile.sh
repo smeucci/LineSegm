@@ -11,22 +11,28 @@ LIBS="-lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs"
 
 # Build c++ files in the src folder
 
-SRC=("astar" "sauvola" "linelocalization" "utils")
+prefix="./src/"
+suffix=".cpp"
 
-for i in "${SRC[@]}"
+SRC=$prefix"*"$suffix
+
+
+for i in $SRC
 do
-    echo "Building file: ../src/$i.cpp"
+    echo "Building file: $i"
     echo "Invoking: GCC C++ Compiler"
-    CMD="g++ $FLAGS -I/usr/local/include -O0 -g3 -Wall -c -fmessage-length=0 -std=c++11 -MMD -MP -MF build/$i.d -MT build/$i.d -o build/$i.o src/$i.cpp"
+    file=${i#$prefix}
+    file=${file%$suffix}
+    CMD="g++ $FLAGS -I/usr/local/include -O0 -g3 -Wall -c -fmessage-length=0 -std=c++11 -MMD -MP -MF build/$file.d -MT build/$file.d -o build/$file.o src/$file.cpp"
     echo $CMD
     $CMD
-    echo "Finished building: ../src/$i.cpp"
+    echo "Finished building: $i"
     echo "  "
 done
 
 # Build main file
 
-echo "Building file: ../main.cpp"
+echo "Building file: ./main.cpp"
 echo "Invoking: GCC C++ Compiler"
 CMD="g++ $FLAGS -I/usr/local/include -O0 -g3 -Wall -c -fmessage-length=0 -std=c++11 -MMD -MP -MF build/main.d -MT build/main.d -o build/main.o main.cpp"
 echo $CMD
@@ -36,17 +42,21 @@ echo "  "
     
 # Invoke linker
 
-echo "Building target: linesegm"
+mkdir -p bin
+
+echo "Building target: ./bin/linesegm"
 echo "Invoking: GCC C++ Linker"
-CMD="g++ -o linesegm "
+CMD="g++ -o ./bin/linesegm "
 for i in ${SRC[@]}
 do
+    i=${i#$prefix}
+    i=${i%$suffix}
     CMD+="build/$i.o "
 done
 CMD+="build/main.o  $LIBS"
 echo $CMD
 $CMD
-echo "Finished building target: linesegm"
+echo "Finished building target: ./bin/linesegm"
 echo " "
 
 echo "Build finished"
