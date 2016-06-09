@@ -27,7 +27,7 @@ inline void print_help () {
 	            "Options:\n"
 	            "\t-s integer \t\tStep value (1 or 2).\n"
 	            "             \t\t\tChange the step with which explore the map.\n"
-	            "\t-mf integer   \t\tMultiplication factor (must be a positive interger).\n"
+	            "\t-mf integer   \t\tMultiplication factor (must be a positive integer).\n"
 	            "             \t\t\tIncrease the multiplication factor to obtain a non-admissible heuristic.\n"
 	            "\t--stats	\t\tCompute and show statistics about the line segmentation.\n"
 	            "\t--help       \t\tShow this help information.\n"
